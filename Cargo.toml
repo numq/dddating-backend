@@ -1,0 +1,21 @@
+[workspace]
+
+members = [
+    #library
+    "library/amqp",
+    "library/cache",
+    "library/configuration",
+    "library/error",
+    "library/status",
+    # service
+    "service/account",
+    "service/authentication",
+    "service/conversation",
+    "service/gateway",
+    "service/matchmaking",
+    "service/profile",
+    "service/recommendation",
+    "service/safety",
+    "service/support",
+    "service/token"
+]
