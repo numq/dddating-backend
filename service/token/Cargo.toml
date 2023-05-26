@@ -1,0 +1,22 @@
+[package]
+name = "token"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+configuration = { path = "../../library/configuration" }
+error = { path = "../../library/error" }
+status = { path = "../../library/status" }
+async-trait = "0.1.68"
+futures = "0.3.28"
+tonic = "0.9.1"
+prost = "0.11.6"
+tokio = { version = "1.24.2", features = ["rt-multi-thread"] }
+jwt = "0.16.0"
+hmac = "0.12.1"
+sha2 = "0.10.6"
+redis = "0.23.0"
+
+[build-dependencies]
+protoc-bin-vendored = "3.0.0"
+tonic-build = "0.9.1"

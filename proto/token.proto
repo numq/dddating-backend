@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package token;
+
+message GenerateAccessTokenRequest{
+  string payload = 1;
+}
+
+message GenerateAccessTokenResponse{
+  string token = 1;
+}
+
+message GenerateRefreshTokenRequest{
+  string payload = 1;
+}
+
+message GenerateRefreshTokenResponse{
+  string token = 1;
+}
+
+message ValidateTokenRequest{
+  string token = 1;
+}
+
+message ValidateTokenResponse{
+  string payload = 1;
+}
+
+message InvalidateTokenRequest{
+  string token = 1;
+}
+
+message InvalidateTokenResponse{
+}
+
+service TokenService{
+  rpc GenerateAccessToken(GenerateAccessTokenRequest) returns (GenerateAccessTokenResponse);
+  rpc GenerateRefreshToken(GenerateRefreshTokenRequest) returns (GenerateRefreshTokenResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+  rpc InvalidateToken(InvalidateTokenRequest) returns (InvalidateTokenResponse);
+}
