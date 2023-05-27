@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package account;
+
+enum Role {
+  MODERATOR = 0;
+  USER = 1;
+}
+
+message Account{
+  string id = 1;
+  string email = 2;
+  string password_hash = 3;
+  string password_salt = 4;
+  Role role = 5;
+  uint64 created_at = 6;
+  uint64 updated_at = 7;
+}
+
+message GetAccountByIdRequest{
+  string id = 1;
+}
+
+message GetAccountByIdResponse{
+  Account account = 1;
+}
+
+message GetAccountByCredentialsRequest{
+  string email = 1;
+  string password = 2;
+}
+
+message GetAccountByCredentialsResponse{
+  Account account = 1;
+}
+
+message CreateAccountRequest{
+  string email = 1;
+  string password = 2;
+  Role role = 3;
+}
+
+message CreateAccountResponse{
+  string id = 1;
+}
+
+message UpdateAccountRequest{
+  string id = 1;
+  optional string email = 2;
+  optional string password = 3;
+  optional Role role = 4;
+}
+
+message UpdateAccountResponse{
+  Account account = 1;
+}
+
+message DeleteAccountRequest{
+  string id = 1;
+}
+
+message DeleteAccountResponse{
+  string id = 1;
+}
+
+service AccountService{
+  rpc GetAccountById(GetAccountByIdRequest) returns (GetAccountByIdResponse);
+  rpc GetAccountByCredentials(GetAccountByCredentialsRequest) returns (GetAccountByCredentialsResponse);
+  rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse);
+  rpc UpdateAccount(UpdateAccountRequest) returns (UpdateAccountResponse);
+  rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse);
+}
