@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package support;
+
+enum Status {
+  ACTIVE = 0;
+  CANCELED = 1;
+  CLOSED = 2;
+}
+
+message Ticket{
+  string id = 1;
+  string user_id = 2;
+  string topic = 3;
+  string description = 4;
+  Status status = 5;
+  uint64 created_at = 6;
+  uint64 updated_at = 7;
+}
+
+message GetTicketsRequest {
+  string user_id = 1;
+  uint64 skip = 2;
+  uint64 limit = 3;
+}
+
+message GetTicketsResponse {
+  repeated Ticket tickets = 1;
+}
+
+message GetTicketByIdRequest {
+  string id = 1;
+}
+
+message GetTicketByIdResponse {
+  Ticket ticket = 1;
+}
+
+message CreateTicketRequest {
+  string user_id = 1;
+  string topic = 2;
+  string description = 3;
+}
+
+message CreateTicketResponse {
+  Status status = 1;
+}
+
+message UpdateTicketRequest {
+  string ticket_id = 1;
+  string description = 2;
+}
+
+message UpdateTicketResponse {
+  Status status = 1;
+}
+
+message DeleteTicketRequest {
+  string ticket_id = 1;
+}
+
+message DeleteTicketResponse {
+  string ticket_id = 1;
+}
+
+service SupportService {
+  rpc GetTickets(GetTicketsRequest) returns (GetTicketsResponse);
+  rpc GetTicketById(GetTicketByIdRequest) returns (GetTicketByIdResponse);
+  rpc CreateTicket(CreateTicketRequest) returns (CreateTicketResponse);
+  rpc UpdateTicket(UpdateTicketRequest) returns (UpdateTicketResponse);
+  rpc DeleteTicket(DeleteTicketRequest) returns (DeleteTicketResponse);
+}
