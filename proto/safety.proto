@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package safety;
+
+message CheckUserIdRequest{
+  string from_id = 1;
+  string to_id = 2;
+}
+
+message CheckUserIdResponse{
+  bool is_blocked = 1;
+}
+
+message GetBlockedUsersRequest {
+  string from_id = 1;
+  uint64 skip = 2;
+  uint64 limit = 3;
+}
+
+message GetBlockedUsersResponse {
+  repeated string user_ids = 1;
+}
+
+message BlockUserRequest {
+  string from_id = 1;
+  string to_id = 2;
+}
+
+message BlockUserResponse {
+}
+
+message UnblockUserRequest {
+  string from_id = 1;
+  string to_id = 2;
+}
+
+message UnblockUserResponse {
+}
+
+service SafetyService {
+  rpc CheckUserId(CheckUserIdRequest) returns (CheckUserIdResponse);
+  rpc GetBlockedUsers(GetBlockedUsersRequest) returns (GetBlockedUsersResponse);
+  rpc BlockUser(BlockUserRequest) returns (BlockUserResponse);
+  rpc UnblockUser(UnblockUserRequest) returns (UnblockUserResponse);
+}
