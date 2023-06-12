@@ -40,12 +40,7 @@ impl SupportInteractorImpl {
 
 #[async_trait]
 impl SupportInteractor for SupportInteractorImpl {
-    async fn get_tickets(
-        &self,
-        user_id: &str,
-        skip: u64,
-        limit: u64,
-    ) -> Result<Vec<Ticket>, Error> {
+    async fn get_tickets(&self, user_id: &str, skip: u64, limit: u64) -> Result<Vec<Ticket>, Error> {
         self.repository.get_tickets(user_id, skip, limit).await
     }
 
@@ -53,12 +48,7 @@ impl SupportInteractor for SupportInteractorImpl {
         self.repository.get_ticket_by_id(id).await
     }
 
-    async fn create_ticket(
-        &self,
-        user_id: &str,
-        topic: &str,
-        description: &str,
-    ) -> Result<Status, Error> {
+    async fn create_ticket(&self, user_id: &str, topic: &str, description: &str) -> Result<Status, Error> {
         self.repository.create_ticket(user_id, topic, description).await
     }
 

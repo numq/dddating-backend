@@ -49,7 +49,8 @@ impl SafetyRepositoryImpl {
 #[async_trait]
 impl SafetyRepository for SafetyRepositoryImpl {
     async fn check_user_id(&self, from_id: &str, to_id: &str) -> Result<bool, Error> {
-        Ok(self.collection.find_one(doc! { "from_id": from_id, "to_id": to_id }, None).await?.is_some())
+        let result = self.collection.find_one(doc! { "from_id": from_id, "to_id": to_id }, None).await?;
+        Ok(result.is_some())
     }
 
     async fn get_blocked_users(&self, from_id: &str, skip: u64, limit: u64) -> Result<Vec<String>, Error> {

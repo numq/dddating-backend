@@ -59,12 +59,7 @@ impl AuthenticationInteractorImpl {
 
 #[async_trait]
 impl AuthenticationInteractor for AuthenticationInteractorImpl {
-    async fn sign_up(
-        &self,
-        email: &str,
-        password: &str,
-        role: Role,
-    ) -> Result<TokenPair, Error> {
+    async fn sign_up(&self, email: &str, password: &str, role: Role) -> Result<TokenPair, Error> {
         let id = self.account_repository.create_account(email, password, role).await?;
         if let Some(account) = self.account_repository.get_account_by_id(&id).await? {
             return self.create_tokens(account).await;
@@ -87,12 +82,7 @@ impl AuthenticationInteractor for AuthenticationInteractorImpl {
         return Ok(false);
     }
 
-    async fn change_password(
-        &self,
-        access_token: &str,
-        refresh_token: &str,
-        new_password: &str,
-    ) -> Result<TokenPair, Error> {
+    async fn change_password(&self, access_token: &str, refresh_token: &str, new_password: &str) -> Result<TokenPair, Error> {
         let payload_str = self.token_repository.validate_token(access_token).await?;
         if let Ok(TokenPayload { account_id, role }) = TokenPayload::from_str(&payload_str) {
             if let Some(_) = self.account_repository.update_account(&account_id, None, Some(String::from(new_password)), None).await? {

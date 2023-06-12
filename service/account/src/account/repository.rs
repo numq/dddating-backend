@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use mongodb::bson::doc;
+use mongodb::bson::{bson, doc};
 use mongodb::bson::oid::ObjectId;
 use mongodb::Collection;
 
@@ -58,13 +58,7 @@ impl AccountRepository for AccountRepositoryImpl {
         Err(make_error!("unable to get account by email and password"))
     }
 
-    async fn create_account(
-        &self,
-        email: &str,
-        password_hash: &str,
-        password_salt: &str,
-        role: Role,
-    ) -> Result<String, Error> {
+    async fn create_account(&self, email: &str, password_hash: &str, password_salt: &str, role: Role) -> Result<String, Error> {
         let id = ObjectId::new().to_hex();
         let account = Account::new(&id, email, password_hash, password_salt, role);
         let result = self.collection.insert_one(account, None).await?;
@@ -74,14 +68,7 @@ impl AccountRepository for AccountRepositoryImpl {
         Err(make_error!("unable to create account"))
     }
 
-    async fn update_account(
-        &self,
-        id: &str,
-        email: Option<String>,
-        password_hash: Option<String>,
-        password_salt: Option<String>,
-        role: Option<Role>,
-    ) -> Result<Account, Error> {
+    async fn update_account(&self, id: &str, email: Option<String>, password_hash: Option<String>, password_salt: Option<String>, role: Option<Role>) -> Result<Account, Error> {
         let timestamp = bson!(Account::timestamp_now() as i64);
         let mut document = doc! { "updated_at": timestamp };
         if let Some(email) = email {

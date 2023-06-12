@@ -62,12 +62,7 @@ impl AccountRepository for AccountRepositoryImpl {
         Ok(account.map(|a| a.into()))
     }
 
-    async fn create_account(
-        &self,
-        email: &str,
-        password: &str,
-        role: Role,
-    ) -> Result<String, Error> {
+    async fn create_account(&self, email: &str, password: &str, role: Role) -> Result<String, Error> {
         let CreateAccountResponse { id } = self.api.create_account(
             Request::new(
                 CreateAccountRequest {
@@ -83,13 +78,7 @@ impl AccountRepository for AccountRepositoryImpl {
         Ok(id)
     }
 
-    async fn update_account(
-        &self,
-        id: &str,
-        email: Option<String>,
-        password: Option<String>,
-        role: Option<Role>,
-    ) -> Result<Option<Account>, Error> {
+    async fn update_account(&self, id: &str, email: Option<String>, password: Option<String>, role: Option<Role>) -> Result<Option<Account>, Error> {
         let UpdateAccountResponse { account } = self.api.update_account(
             Request::new(
                 UpdateAccountRequest {

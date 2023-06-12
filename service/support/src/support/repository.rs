@@ -46,12 +46,7 @@ impl SupportRepositoryImpl {
 
 #[async_trait]
 impl SupportRepository for SupportRepositoryImpl {
-    async fn get_tickets(
-        &self,
-        user_id: &str,
-        skip: u64,
-        limit: u64,
-    ) -> Result<Vec<Ticket>, Error> {
+    async fn get_tickets(&self, user_id: &str, skip: u64, limit: u64) -> Result<Vec<Ticket>, Error> {
         let filter = doc! {"user_id": user_id };
         let mut tickets: Vec<Ticket> = vec![];
         let options = FindOptions::builder().skip(skip).limit(limit.try_into().ok()).build();
@@ -69,12 +64,7 @@ impl SupportRepository for SupportRepositoryImpl {
         Err(make_error!("unable to get ticket by id"))
     }
 
-    async fn create_ticket(
-        &self,
-        user_id: &str,
-        topic: &str,
-        description: &str,
-    ) -> Result<Status, Error> {
+    async fn create_ticket(&self, user_id: &str, topic: &str, description: &str) -> Result<Status, Error> {
         let id = ObjectId::new().to_hex();
         let ticket = Ticket::new(&id, user_id, topic, description);
         let result = self.collection.insert_one(ticket.clone(), None).await;

@@ -54,23 +54,12 @@ impl AccountInteractor for AccountInteractorImpl {
         }
     }
 
-    async fn create_account(
-        &self,
-        email: &str,
-        password: &str,
-        role: Role,
-    ) -> Result<String, Error> {
+    async fn create_account(&self, email: &str, password: &str, role: Role) -> Result<String, Error> {
         let (hash, salt) = self.password_hasher.hash_password(password)?;
         self.repository.create_account(&email.to_string(), &hash, &salt, role).await
     }
 
-    async fn update_account(
-        &self,
-        id: &str,
-        email: Option<String>,
-        password: Option<String>,
-        role: Option<Role>,
-    ) -> Result<Account, Error> {
+    async fn update_account(&self, id: &str, email: Option<String>, password: Option<String>, role: Option<Role>) -> Result<Account, Error> {
         let (hash, salt) = match password {
             Some(password) => self.password_hasher
                 .hash_password(&password)
