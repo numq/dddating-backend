@@ -1,10 +1,8 @@
-use async_trait::async_trait;
-
 use crate::safety::repository::SafetyRepository;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 
-#[async_trait]
+#[async_trait::async_trait]
 pub trait SafetyInteractor {
     async fn check_user_id(
         &self,
@@ -39,7 +37,7 @@ impl SafetyInteractorImpl {
     }
 }
 
-#[async_trait]
+#[async_trait::async_trait]
 impl SafetyInteractor for SafetyInteractorImpl {
     async fn check_user_id(&self, from_id: &str, to_id: &str) -> Result<bool, Error> {
         self.repository.check_user_id(from_id, to_id).await

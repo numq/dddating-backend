@@ -1,4 +1,3 @@
-use async_trait::async_trait;
 use futures::TryStreamExt;
 use mongodb::bson::doc;
 use mongodb::bson::oid::ObjectId;
@@ -11,7 +10,7 @@ use crate::safety::entity::BlockedUser;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 
-#[async_trait]
+#[async_trait::async_trait]
 pub trait SafetyRepository {
     async fn check_user_id(
         &self,
@@ -46,7 +45,7 @@ impl SafetyRepositoryImpl {
     }
 }
 
-#[async_trait]
+#[async_trait::async_trait]
 impl SafetyRepository for SafetyRepositoryImpl {
     async fn check_user_id(&self, from_id: &str, to_id: &str) -> Result<bool, Error> {
         let result = self.collection.find_one(doc! { "from_id": from_id, "to_id": to_id }, None).await?;

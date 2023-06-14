@@ -23,7 +23,11 @@ impl SafetyService for SafetyServiceImpl {
         }
 
         match self.interactor.check_user_id(&from_id, &to_id).await {
-            Ok(is_blocked) => Ok(Response::new(CheckUserIdResponse { is_blocked })),
+            Ok(is_blocked) => Ok(
+                Response::new(
+                    CheckUserIdResponse { is_blocked }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -35,7 +39,11 @@ impl SafetyService for SafetyServiceImpl {
         }
 
         match self.interactor.get_blocked_users(&from_id, skip, limit).await {
-            Ok(user_ids) => Ok(Response::new(GetBlockedUsersResponse { user_ids: user_ids.into_iter().collect() })),
+            Ok(user_ids) => Ok(
+                Response::new(
+                    GetBlockedUsersResponse { user_ids: user_ids.into_iter().collect() }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -47,7 +55,11 @@ impl SafetyService for SafetyServiceImpl {
         }
 
         match self.interactor.block_user(&from_id, &to_id).await {
-            Ok(_) => Ok(Response::new(BlockUserResponse {})),
+            Ok(_) => Ok(
+                Response::new(
+                    BlockUserResponse::default()
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -59,7 +71,11 @@ impl SafetyService for SafetyServiceImpl {
         }
 
         match self.interactor.unblock_user(&from_id, &to_id).await {
-            Ok(_) => Ok(Response::new(UnblockUserResponse {})),
+            Ok(_) => Ok(
+                Response::new(
+                    UnblockUserResponse::default()
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }

@@ -1,5 +1,6 @@
 use tonic::{Code, Request, Response, Status};
 
+use crate::account;
 use crate::account::entity::Role;
 use crate::account::interactor::AccountInteractor;
 use crate::account::pb::{CreateAccountRequest, CreateAccountResponse, DeleteAccountRequest, DeleteAccountResponse, GetAccountByCredentialsRequest, GetAccountByCredentialsResponse, GetAccountByIdRequest, GetAccountByIdResponse, Role as RoleMessage, UpdateAccountRequest, UpdateAccountResponse};
@@ -24,7 +25,11 @@ impl AccountService for AccountServiceImpl {
         }
 
         match self.interactor.get_account_by_id(&id).await {
-            Ok(account) => Ok(Response::new(GetAccountByIdResponse { account: Some(account.into()) })),
+            Ok(account) => Ok(
+                Response::new(
+                    GetAccountByIdResponse { account: Some(account.into()) }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -36,7 +41,11 @@ impl AccountService for AccountServiceImpl {
         }
 
         match self.interactor.get_account_by_credentials(&email, &password).await {
-            Ok(account) => Ok(Response::new(GetAccountByCredentialsResponse { account: Some(account.into()) })),
+            Ok(account) => Ok(
+                Response::new(
+                    GetAccountByCredentialsResponse { account: Some(account.into()) }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -51,7 +60,11 @@ impl AccountService for AccountServiceImpl {
             RoleMessage::User => Role::User,
             RoleMessage::Moderator => Role::Moderator
         }).await {
-            Ok(id) => Ok(Response::new(CreateAccountResponse { id })),
+            Ok(id) => Ok(
+                Response::new(
+                    CreateAccountResponse { id }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -66,7 +79,11 @@ impl AccountService for AccountServiceImpl {
             RoleMessage::User => Role::User,
             RoleMessage::Moderator => Role::Moderator
         })).await {
-            Ok(account) => Ok(Response::new(UpdateAccountResponse { account: Some(account.into()) })),
+            Ok(account) => Ok(
+                Response::new(
+                    UpdateAccountResponse { account: Some(account.into()) }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -78,7 +95,11 @@ impl AccountService for AccountServiceImpl {
         }
 
         match self.interactor.delete_account(&id).await {
-            Ok(id) => Ok(Response::new(DeleteAccountResponse { id })),
+            Ok(id) => Ok(
+                Response::new(
+                    DeleteAccountResponse { id }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }

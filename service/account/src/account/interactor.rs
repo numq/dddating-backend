@@ -1,5 +1,3 @@
-use async_trait::async_trait;
-
 use error::make_error;
 
 use crate::account::entity::{Account, Role};
@@ -8,7 +6,7 @@ use crate::password::hasher::Hasher;
 
 type Error = Box<dyn error::Error + Send + Sync>;
 
-#[async_trait]
+#[async_trait::async_trait]
 pub trait AccountInteractor {
     async fn get_account_by_id(&self, id: &str) -> Result<Account, Error>;
     async fn get_account_by_credentials(&self, email: &str, password: &str) -> Result<Account, Error>;
@@ -39,7 +37,7 @@ impl AccountInteractorImpl {
     }
 }
 
-#[async_trait]
+#[async_trait::async_trait]
 impl AccountInteractor for AccountInteractorImpl {
     async fn get_account_by_id(&self, id: &str) -> Result<Account, Error> {
         self.repository.get_account_by_id(id).await

@@ -1,13 +1,13 @@
-use async_trait::async_trait;
 use tonic::Request;
 
+use crate::account;
 use crate::account::entity::{Account, Role};
 use crate::account::pb::{CreateAccountRequest, CreateAccountResponse, DeleteAccountRequest, DeleteAccountResponse, GetAccountByCredentialsRequest, GetAccountByCredentialsResponse, GetAccountByIdRequest, GetAccountByIdResponse, Role as RoleMessage, UpdateAccountRequest, UpdateAccountResponse};
 use crate::account::pb::account_service_server::AccountService;
 
 type Error = Box<dyn error::Error + Send + Sync>;
 
-#[async_trait]
+#[async_trait::async_trait]
 pub trait AccountRepository {
     async fn get_account_by_id(&self, id: &str) -> Result<Option<Account>, Error>;
     async fn get_account_by_credentials(&self, email: &str, password: &str) -> Result<Option<Account>, Error>;
@@ -37,20 +37,18 @@ impl AccountRepositoryImpl {
     }
 }
 
-#[async_trait]
+#[async_trait::async_trait]
 impl AccountRepository for AccountRepositoryImpl {
     async fn get_account_by_id(&self, id: &str) -> Result<Option<Account>, Error> {
         let GetAccountByIdResponse { account } = self.api.get_account_by_id(
             Request::new(
-                GetAccountByIdRequest {
-                    id: String::from(id)
-                }
+                GetAccountByIdRequest { id: String::from(id) }
             )
         ).await?.into_inner();
         Ok(account.map(|a| a.into()))
     }
 
-    async fn get_account_by_credentials(&self, email: &str, password: &str) -> Result<Option<Account>, Error> {
+    async fn get_account_by_credentials(&self, email: &str, password: &str) -> Result<Option<account::entity::Account>, Error> {
         let GetAccountByCredentialsResponse { account } = self.api.get_account_by_credentials(
             Request::new(
                 GetAccountByCredentialsRequest {
@@ -98,9 +96,7 @@ impl AccountRepository for AccountRepositoryImpl {
     async fn delete_account(&self, id: &str) -> Result<String, Error> {
         let DeleteAccountResponse { id } = self.api.delete_account(
             Request::new(
-                DeleteAccountRequest {
-                    id: String::from(id)
-                }
+                DeleteAccountRequest { id: String::from(id) }
             )
         ).await?.into_inner();
         Ok(id)

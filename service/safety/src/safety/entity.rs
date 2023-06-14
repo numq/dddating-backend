@@ -13,12 +13,12 @@ pub struct BlockedUser {
 }
 
 impl BlockedUser {
-    pub fn timestamp_now() -> u64 {
+    fn timestamp_now() -> u64 {
         SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis() as u64
     }
 
     pub fn new(id: &str, from_id: &str, to_id: &str) -> Self {
-        let now = BlockedUser::timestamp_now();
+        let now = Self::timestamp_now();
         Self {
             id: String::from(id),
             from_id: String::from(from_id),

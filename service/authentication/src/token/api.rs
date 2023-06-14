@@ -26,9 +26,10 @@ impl TokenService for TokenApi {
         self.client
             .clone()
             .generate_access_token(
-                Request::new(GenerateAccessTokenRequest { payload })
-            )
-            .await
+                Request::new(
+                    GenerateAccessTokenRequest { payload }
+                )
+            ).await
     }
 
     async fn generate_refresh_token(&self, request: Request<GenerateRefreshTokenRequest>) -> Result<Response<GenerateRefreshTokenResponse>, Status> {
@@ -40,7 +41,9 @@ impl TokenService for TokenApi {
         self.client
             .clone()
             .generate_refresh_token(
-                Request::new(GenerateRefreshTokenRequest { payload })
+                Request::new(
+                    GenerateRefreshTokenRequest { payload }
+                )
             ).await
     }
 
@@ -53,7 +56,9 @@ impl TokenService for TokenApi {
         self.client
             .clone()
             .validate_token(
-                Request::new(ValidateTokenRequest { token })
+                Request::new(
+                    ValidateTokenRequest { token }
+                )
             ).await
     }
 
@@ -66,7 +71,9 @@ impl TokenService for TokenApi {
         self.client
             .clone()
             .invalidate_token(
-                Request::new(InvalidateTokenRequest { token })
+                Request::new(
+                    InvalidateTokenRequest { token }
+                )
             ).await
     }
 }

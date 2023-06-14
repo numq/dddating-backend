@@ -2,7 +2,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Clone, Copy)]
+#[derive(Serialize, Deserialize, Clone)]
 pub enum Status {
     Active,
     Canceled,
@@ -22,12 +22,12 @@ pub struct Ticket {
 }
 
 impl Ticket {
-    pub fn timestamp_now() -> u64 {
+    fn timestamp_now() -> u64 {
         SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis() as u64
     }
 
     pub fn new(id: &str, user_id: &str, topic: &str, description: &str) -> Self {
-        let now = Ticket::timestamp_now();
+        let now = Self::timestamp_now();
         Self {
             id: String::from(id),
             user_id: String::from(user_id),

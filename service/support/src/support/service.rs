@@ -23,7 +23,11 @@ impl SupportService for SupportServiceImpl {
         }
 
         match self.interactor.get_tickets(&user_id, skip, limit).await {
-            Ok(tickets) => Ok(Response::new(GetTicketsResponse { tickets: tickets.into_iter().map(|ticket| ticket.into()).collect() })),
+            Ok(tickets) => Ok(
+                Response::new(
+                    GetTicketsResponse { tickets: tickets.into_iter().map(|ticket| ticket.into()).collect() }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -35,7 +39,11 @@ impl SupportService for SupportServiceImpl {
         }
 
         match self.interactor.get_ticket_by_id(&id).await {
-            Ok(ticket) => Ok(Response::new(GetTicketByIdResponse { ticket: Some(ticket.into()) })),
+            Ok(ticket) => Ok(
+                Response::new(
+                    GetTicketByIdResponse { ticket: Some(ticket.into()) }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -47,7 +55,11 @@ impl SupportService for SupportServiceImpl {
         }
 
         match self.interactor.create_ticket(&user_id, &topic, &description).await {
-            Ok(status) => Ok(Response::new(CreateTicketResponse { status: status as i32 })),
+            Ok(status) => Ok(
+                Response::new(
+                    CreateTicketResponse { status: status as i32 }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -59,7 +71,11 @@ impl SupportService for SupportServiceImpl {
         }
 
         match self.interactor.update_ticket(&ticket_id, &description).await {
-            Ok(status) => Ok(Response::new(UpdateTicketResponse { status: status as i32 })),
+            Ok(status) => Ok(
+                Response::new(
+                    UpdateTicketResponse { status: status as i32 }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -71,7 +87,11 @@ impl SupportService for SupportServiceImpl {
         }
 
         match self.interactor.delete_ticket(&ticket_id).await {
-            Ok(ticket_id) => Ok(Response::new(DeleteTicketResponse { ticket_id })),
+            Ok(ticket_id) => Ok(
+                Response::new(
+                    DeleteTicketResponse { ticket_id }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }

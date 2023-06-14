@@ -1,4 +1,3 @@
-use async_trait::async_trait;
 use futures::TryStreamExt;
 use mongodb::{bson, Collection};
 use mongodb::bson::{bson, doc};
@@ -11,7 +10,7 @@ use crate::support::entity::{Status, Ticket};
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 
-#[async_trait]
+#[async_trait::async_trait]
 pub trait SupportRepository {
     async fn get_tickets(
         &self,
@@ -44,7 +43,7 @@ impl SupportRepositoryImpl {
     }
 }
 
-#[async_trait]
+#[async_trait::async_trait]
 impl SupportRepository for SupportRepositoryImpl {
     async fn get_tickets(&self, user_id: &str, skip: u64, limit: u64) -> Result<Vec<Ticket>, Error> {
         let filter = doc! {"user_id": user_id };

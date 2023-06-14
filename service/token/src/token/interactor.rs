@@ -1,10 +1,8 @@
-use async_trait::async_trait;
-
 use crate::token::repository::TokenRepository;
 
 type Error = Box<dyn error::Error + Send + Sync>;
 
-#[async_trait]
+#[async_trait::async_trait]
 pub trait TokenInteractor {
     async fn generate_access_token(&self, payload: &str) -> Result<String, Error>;
     async fn generate_refresh_token(&self, payload: &str) -> Result<String, Error>;
@@ -22,7 +20,7 @@ impl TokenInteractorImpl {
     }
 }
 
-#[async_trait]
+#[async_trait::async_trait]
 impl TokenInteractor for TokenInteractorImpl {
     async fn generate_access_token(&self, payload: &str) -> Result<String, Error> {
         self.repository.generate_access_token(payload).await

@@ -26,7 +26,9 @@ impl AccountService for AccountApi {
         self.client
             .clone()
             .get_account_by_id(
-                Request::new(GetAccountByIdRequest { id })
+                Request::new(
+                    GetAccountByIdRequest { id }
+                )
             ).await
     }
 
@@ -39,7 +41,12 @@ impl AccountService for AccountApi {
         self.client
             .clone()
             .get_account_by_credentials(
-                Request::new(GetAccountByCredentialsRequest { email, password })
+                Request::new(
+                    GetAccountByCredentialsRequest {
+                        email,
+                        password,
+                    }
+                )
             ).await
     }
 
@@ -52,7 +59,13 @@ impl AccountService for AccountApi {
         self.client
             .clone()
             .create_account(
-                Request::new(CreateAccountRequest { email, password, role })
+                Request::new(
+                    CreateAccountRequest {
+                        email,
+                        password,
+                        role,
+                    }
+                )
             ).await
     }
 
@@ -65,7 +78,14 @@ impl AccountService for AccountApi {
         self.client
             .clone()
             .update_account(
-                Request::new(UpdateAccountRequest { id, email, password, role })
+                Request::new(
+                    UpdateAccountRequest {
+                        id,
+                        email,
+                        password,
+                        role,
+                    }
+                )
             ).await
     }
 
@@ -76,7 +96,9 @@ impl AccountService for AccountApi {
         }
 
         self.client.clone().delete_account(
-            Request::new(DeleteAccountRequest { id })
+            Request::new(
+                DeleteAccountRequest { id }
+            )
         ).await
     }
 }

@@ -1,4 +1,3 @@
-use async_trait::async_trait;
 use mongodb::bson::{bson, doc};
 use mongodb::bson::oid::ObjectId;
 use mongodb::Collection;
@@ -9,7 +8,7 @@ use crate::account::entity::{Account, Role};
 
 type Error = Box<dyn error::Error + Send + Sync>;
 
-#[async_trait]
+#[async_trait::async_trait]
 pub trait AccountRepository {
     async fn get_account_by_id(&self, id: &str) -> Result<Account, Error>;
     async fn get_account_by_email(&self, email: &str) -> Result<Account, Error>;
@@ -41,7 +40,7 @@ impl AccountRepositoryImpl {
     }
 }
 
-#[async_trait]
+#[async_trait::async_trait]
 impl AccountRepository for AccountRepositoryImpl {
     async fn get_account_by_id(&self, id: &str) -> Result<Account, Error> {
         if let Some(account) = self.collection.find_one(doc! { "_id": id }, None).await? {

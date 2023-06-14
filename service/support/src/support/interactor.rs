@@ -1,11 +1,9 @@
-use async_trait::async_trait;
-
 use crate::support::entity::{Status, Ticket};
 use crate::support::repository::SupportRepository;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 
-#[async_trait]
+#[async_trait::async_trait]
 pub trait SupportInteractor {
     async fn get_tickets(
         &self,
@@ -38,7 +36,7 @@ impl SupportInteractorImpl {
     }
 }
 
-#[async_trait]
+#[async_trait::async_trait]
 impl SupportInteractor for SupportInteractorImpl {
     async fn get_tickets(&self, user_id: &str, skip: u64, limit: u64) -> Result<Vec<Ticket>, Error> {
         self.repository.get_tickets(user_id, skip, limit).await

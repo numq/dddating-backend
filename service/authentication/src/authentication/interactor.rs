@@ -1,5 +1,3 @@
-use async_trait::async_trait;
-
 use error::make_error;
 
 use crate::account::entity::{Account, Role};
@@ -9,7 +7,7 @@ use crate::token::repository::TokenRepository;
 
 type Error = Box<dyn error::Error + Send + Sync>;
 
-#[async_trait]
+#[async_trait::async_trait]
 pub trait AuthenticationInteractor {
     async fn sign_up(
         &self,
@@ -57,7 +55,7 @@ impl AuthenticationInteractorImpl {
     }
 }
 
-#[async_trait]
+#[async_trait::async_trait]
 impl AuthenticationInteractor for AuthenticationInteractorImpl {
     async fn sign_up(&self, email: &str, password: &str, role: Role) -> Result<TokenPair, Error> {
         let id = self.account_repository.create_account(email, password, role).await?;

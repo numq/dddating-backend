@@ -23,7 +23,11 @@ impl TokenService for TokenServiceImpl {
         }
 
         match self.interactor.generate_access_token(&payload).await {
-            Ok(token) => Ok(Response::new(GenerateAccessTokenResponse { token })),
+            Ok(token) => Ok(
+                Response::new(
+                    GenerateAccessTokenResponse { token }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -35,7 +39,11 @@ impl TokenService for TokenServiceImpl {
         }
 
         match self.interactor.generate_refresh_token(&payload).await {
-            Ok(token) => Ok(Response::new(GenerateRefreshTokenResponse { token })),
+            Ok(token) => Ok(
+                Response::new(
+                    GenerateRefreshTokenResponse { token }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -47,7 +55,11 @@ impl TokenService for TokenServiceImpl {
         }
 
         match self.interactor.validate_token(&token).await {
-            Ok(payload) => Ok(Response::new(ValidateTokenResponse { payload })),
+            Ok(payload) => Ok(
+                Response::new(
+                    ValidateTokenResponse { payload }
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
@@ -59,7 +71,11 @@ impl TokenService for TokenServiceImpl {
         }
 
         match self.interactor.invalidate_token(&token).await {
-            Ok(_) => Ok(Response::new(InvalidateTokenResponse::default())),
+            Ok(_) => Ok(
+                Response::new(
+                    InvalidateTokenResponse::default()
+                )
+            ),
             Err(error) => status::Status::internal(error)
         }
     }
