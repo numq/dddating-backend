@@ -12,7 +12,7 @@ const BLOCKED_USERS_COLLECTION: &str = "blocked_users";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let cfg = configuration::Config::new("../.env", SERVICE_NAME)?;
+    let cfg = configuration::Config::new("service/.env", SERVICE_NAME)?;
     let mongodb = mongodb::Client::with_uri_str(format!("mongodb://{}:{}", cfg.mongo_hostname.unwrap(), cfg.mongo_port.unwrap())).await?;
     let database = mongodb.database(SERVICE_NAME);
     let collection = database.collection::<BlockedUser>(BLOCKED_USERS_COLLECTION);

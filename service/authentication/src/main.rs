@@ -16,7 +16,7 @@ const SERVICE_NAME: &str = "authentication";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let cfg = configuration::Config::new("../.env", SERVICE_NAME)?;
+    let cfg = configuration::Config::new("service/.env", SERVICE_NAME)?;
     let create_channel_url: fn(&str, &str) -> &'static str = |hostname, port| Box::leak(format!("https://{}:{}", hostname, port).into_boxed_str());
 
     let account_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(ACCOUNT_SERVICE_NAME).unwrap());
