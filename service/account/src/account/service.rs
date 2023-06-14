@@ -1,6 +1,5 @@
-use tonic::{Code, Request, Response, Status};
+use tonic::{Request, Response, Status};
 
-use crate::account;
 use crate::account::entity::Role;
 use crate::account::interactor::AccountInteractor;
 use crate::account::pb::{CreateAccountRequest, CreateAccountResponse, DeleteAccountRequest, DeleteAccountResponse, GetAccountByCredentialsRequest, GetAccountByCredentialsResponse, GetAccountByIdRequest, GetAccountByIdResponse, Role as RoleMessage, UpdateAccountRequest, UpdateAccountResponse};

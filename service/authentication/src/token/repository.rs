@@ -3,7 +3,7 @@ use tonic::Request;
 use crate::token::pb::{GenerateAccessTokenRequest, GenerateAccessTokenResponse, GenerateRefreshTokenRequest, GenerateRefreshTokenResponse, InvalidateTokenRequest, InvalidateTokenResponse, ValidateTokenRequest, ValidateTokenResponse};
 use crate::token::pb::token_service_server::TokenService;
 
-type Error = Box<dyn error::Error + Send + Sync>;
+type Error = Box<dyn std::error::Error + Send + Sync>;
 
 #[async_trait::async_trait]
 pub trait TokenRepository {

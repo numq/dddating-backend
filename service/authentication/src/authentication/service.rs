@@ -1,9 +1,7 @@
-use std::error::Error;
+use tonic::{Request, Response, Status};
 
-use tonic::{Code, Request, Response, Status};
-
-use crate::{account, authentication};
 use crate::account::entity::Role;
+use crate::authentication;
 use crate::authentication::entity::TokenPair;
 use crate::authentication::pb::{ChangePasswordRequest, ChangePasswordResponse, RefreshTokenRequest, RefreshTokenResponse, Role as RoleMessage, SignInRequest, SignInResponse, SignOutRequest, SignOutResponse, SignUpRequest, SignUpResponse, ValidateTokenRequest, ValidateTokenResponse};
 use crate::authentication::pb::authentication_service_server::AuthenticationService;

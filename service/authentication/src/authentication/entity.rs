@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::account::entity::Role;
 
-type Error = Box<dyn error::Error + Send + Sync>;
+type Error = Box<dyn std::error::Error + Send + Sync>;
 
 #[derive(Serialize, Deserialize)]
 pub struct TokenPayload {

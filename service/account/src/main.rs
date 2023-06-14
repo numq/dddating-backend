@@ -3,20 +3,18 @@ use std::net::SocketAddr;
 
 use tonic::transport::Server;
 
-use configuration::Config;
-
 mod account;
 mod password;
 
 const SERVICE_NAME: &str = "account";
-const ACCOUNT_COLLECTION: &str = "accounts";
+const ACCOUNTS_COLLECTION: &str = "accounts";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let cfg = Config::new_default(SERVICE_NAME)?;
+    let cfg = configuration::Config::new("../.env", SERVICE_NAME)?;
     let mongodb = mongodb::Client::with_uri_str(format!("mongodb://{}:{}", cfg.mongo_hostname.unwrap(), cfg.mongo_port.unwrap())).await?;
     let database = mongodb.database(SERVICE_NAME);
-    let collection = database.collection::<account::entity::Account>(ACCOUNT_COLLECTION);
+    let collection = database.collection::<account::entity::Account>(ACCOUNTS_COLLECTION);
     let repository = account::repository::AccountRepositoryImpl::new(collection);
     let hasher = password::hasher::DefaultHasher::new();
     let interactor = account::interactor::AccountInteractorImpl::new(hasher, repository);

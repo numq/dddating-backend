@@ -5,7 +5,7 @@ use crate::account::repository::AccountRepository;
 use crate::authentication::entity::{TokenPair, TokenPayload};
 use crate::token::repository::TokenRepository;
 
-type Error = Box<dyn error::Error + Send + Sync>;
+type Error = Box<dyn std::error::Error + Send + Sync>;
 
 #[async_trait::async_trait]
 pub trait AuthenticationInteractor {

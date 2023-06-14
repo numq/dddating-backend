@@ -8,7 +8,7 @@ use sha2::Sha256;
 
 use error::make_error;
 
-type Error = Box<dyn error::Error + Send + Sync>;
+type Error = Box<dyn std::error::Error + Send + Sync>;
 
 #[async_trait::async_trait]
 pub trait TokenRepository {

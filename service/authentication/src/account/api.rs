@@ -1,4 +1,4 @@
-use tonic::{Code, Request, Response, Status};
+use tonic::{Request, Response, Status};
 use tonic::transport::Channel;
 
 use crate::account::pb::{CreateAccountRequest, CreateAccountResponse, DeleteAccountRequest, DeleteAccountResponse, GetAccountByCredentialsRequest, GetAccountByCredentialsResponse, GetAccountByIdRequest, GetAccountByIdResponse, UpdateAccountRequest, UpdateAccountResponse};

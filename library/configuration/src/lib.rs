@@ -40,10 +40,6 @@ impl Config {
         })
     }
 
-    pub fn new_default(service_name: &str) -> Result<Self, Box<dyn Error>> {
-        Self::new("../../service/.env", service_name)
-    }
-
     pub fn find_port(&self, service_name: &str) -> Result<String, Box<dyn Error>> {
         var(format!("{}_PORT", service_name)).map_err(|err| Box::new(err) as Box<dyn Error>)
     }

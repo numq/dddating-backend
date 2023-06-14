@@ -3,7 +3,7 @@ use password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString};
 
 use error::make_error;
 
-type Error = Box<dyn error::Error + Send + Sync>;
+type Error = Box<dyn std::error::Error + Send + Sync>;
 type Hash = String;
 type Salt = String;
 

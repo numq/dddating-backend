@@ -1,4 +1,4 @@
-use tonic::{Code, Request, Response, Status};
+use tonic::{Request, Response, Status};
 use tonic::transport::Channel;
 
 use crate::token::pb::{GenerateAccessTokenRequest, GenerateAccessTokenResponse, GenerateRefreshTokenRequest, GenerateRefreshTokenResponse, InvalidateTokenRequest, InvalidateTokenResponse, ValidateTokenRequest, ValidateTokenResponse};

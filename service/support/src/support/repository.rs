@@ -1,5 +1,5 @@
 use futures::TryStreamExt;
-use mongodb::{bson, Collection};
+use mongodb::Collection;
 use mongodb::bson::{bson, doc};
 use mongodb::bson::oid::ObjectId;
 use mongodb::options::FindOptions;
@@ -75,7 +75,7 @@ impl SupportRepository for SupportRepositoryImpl {
 
     async fn update_ticket(&self, ticket_id: &str, description: &str) -> Result<Status, Error> {
         let timestamp = bson!(Ticket::timestamp_now() as i64);
-        let mut document = doc! {
+        let document = doc! {
             "description": description,
             "updated_at": timestamp
         };

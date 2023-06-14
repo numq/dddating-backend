@@ -6,7 +6,7 @@ use error::make_error;
 
 use crate::account::entity::{Account, Role};
 
-type Error = Box<dyn error::Error + Send + Sync>;
+type Error = Box<dyn std::error::Error + Send + Sync>;
 
 #[async_trait::async_trait]
 pub trait AccountRepository {

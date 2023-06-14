@@ -5,7 +5,7 @@ use crate::account::entity::{Account, Role};
 use crate::account::pb::{CreateAccountRequest, CreateAccountResponse, DeleteAccountRequest, DeleteAccountResponse, GetAccountByCredentialsRequest, GetAccountByCredentialsResponse, GetAccountByIdRequest, GetAccountByIdResponse, Role as RoleMessage, UpdateAccountRequest, UpdateAccountResponse};
 use crate::account::pb::account_service_server::AccountService;
 
-type Error = Box<dyn error::Error + Send + Sync>;
+type Error = Box<dyn std::error::Error + Send + Sync>;
 
 #[async_trait::async_trait]
 pub trait AccountRepository {
