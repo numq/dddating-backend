@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+package conversation;
+
+message Chat{
+  string id = 1;
+  repeated string member_ids = 2;
+  Message last_message = 3;
+  repeated string typing_member_ids = 4;
+  uint64 created_at = 5;
+  uint64 updated_at = 6;
+}
+
+message Message {
+  string id = 1;
+  string chat_id = 2;
+  string sender_id = 3;
+  string text = 4;
+  repeated bytes images = 5;
+  bool is_delivered = 6;
+  bool is_read = 7;
+  uint64 sent_at = 8;
+}
+
+message GetChatsRequest {
+  string member_id = 1;
+  uint64 skip = 2;
+  uint64 limit = 3;
+}
+
+message GetChatsResponse {
+  repeated Chat chats = 1;
+}
+
+message GetChatByIdRequest {
+  string chat_id = 1;
+}
+
+message GetChatByIdResponse {
+  Chat chat = 1;
+}
+
+message UpdateChatRequest {
+  string chat_id = 1;
+  Message last_message = 2;
+  repeated string typing_member_ids = 3;
+}
+
+message UpdateChatResponse {
+  Chat chat = 1;
+}
+
+message DeleteChatRequest {
+  string chat_id = 1;
+}
+
+message DeleteChatResponse {
+  string chat_id = 1;
+}
+
+message GetMessagesRequest{
+  string chat_id = 1;
+  uint64 skip = 2;
+  uint64 limit = 3;
+}
+
+message GetMessagesResponse{
+  repeated Message messages = 1;
+}
+
+message GetMessageByIdRequest{
+  string message_id = 1;
+}
+
+message GetMessageByIdResponse{
+  Message message = 1;
+}
+
+message SendMessageRequest {
+  string chat_id = 1;
+  string member_id = 2;
+  string text = 3;
+  repeated bytes images = 4;
+}
+
+message SendMessageResponse {
+  Message message = 1;
+}
+
+message DeleteMessageRequest {
+  string message_id = 1;
+}
+
+message DeleteMessageResponse {
+  string message_id = 1;
+}
+
+service ConversationService {
+  rpc GetChats(GetChatsRequest) returns (GetChatsResponse);
+  rpc GetChatById(GetChatByIdRequest) returns (GetChatByIdResponse);
+  rpc UpdateChat(UpdateChatRequest) returns (UpdateChatResponse);
+  rpc DeleteChat(DeleteChatRequest) returns (DeleteChatResponse);
+  rpc GetMessages(GetMessagesRequest) returns (GetMessagesResponse);
+  rpc GetMessageById(GetMessageByIdRequest) returns (GetMessageByIdResponse);
+  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+  rpc DeleteMessage(DeleteMessageRequest) returns (DeleteMessageResponse);
+}
