@@ -97,7 +97,7 @@ impl MessageQueue {
     pub async fn start_consuming(
         &mut self,
         queue_name: &str,
-        mut callback: Box<dyn FnMut(&[u8]) -> Result<(), Box<dyn Error + Send>> + Send>,
+        callback: Box<dyn Fn(&[u8]) -> Result<(), Box<dyn Error + Send + Sync>> + Send + Sync>,
     ) -> Result<(), Box<dyn Error>> {
         let consumer = self.channel
             .basic_consume(
@@ -105,29 +105,26 @@ impl MessageQueue {
                 "default",
                 BasicConsumeOptions::default(),
                 FieldTable::default(),
-            ).await.unwrap();
+            )
+            .await
+            .unwrap();
         self.consumer = Some(consumer.clone());
         let channel = self.channel.clone();
 
-        spawn(async move {
+        let _ = spawn(async move {
             println!("consumer with name '{}' started", &consumer.tag().as_str());
 
             while let Some(delivery) = consumer.clone().next().await {
                 if let Ok(delivery) = delivery {
                     if let Ok(()) = callback(&delivery.data) {
-                        channel
-                            .basic_ack(delivery.delivery_tag, BasicAckOptions::default())
-                            .await
-                            .unwrap();
+                        let _ = channel.basic_ack(delivery.delivery_tag, BasicAckOptions::default()).await;
                     } else {
-                        channel
-                            .basic_reject(delivery.delivery_tag, BasicRejectOptions::default())
-                            .await
-                            .unwrap();
+                        let _ = channel.basic_reject(delivery.delivery_tag, BasicRejectOptions::default()).await;
                     }
                 }
             }
         });
+
         Ok(())
     }
 
@@ -148,7 +145,7 @@ mod tests {
     use std::sync::{Arc, Mutex};
     use std::time::{Duration, SystemTime};
 
-    use tokio::time::sleep;
+    use tokio::time::{sleep, timeout};
 
     use super::*;
 
@@ -187,6 +184,10 @@ mod tests {
     async fn test_publish_consume() {
         let mut message_queue = MessageQueue::connect(HOSTNAME, PORT).await.unwrap();
 
+        timeout(Duration::from_millis(5000), async {
+            message_queue.clear_queue(QUEUE_NAME).await.expect("unable to clear the queue")
+        }).await.unwrap();
+
         let expected_message_count = 5;
 
         let messages: Arc<Mutex<Vec<String>>> = Arc::new(Mutex::new(Vec::new()));
@@ -196,12 +197,11 @@ mod tests {
             assert_eq!(message_queue.publish(EXCHANGE_NAME, ROUTING_KEY, TEST_MESSAGE.as_bytes()).await.unwrap(), ());
         }
 
-        let handle_message = move |msg: &[u8]| -> Result<(), Box<dyn Error + Send>> {
+        let handle_message = move |msg: &[u8]| {
             let received_message = from_utf8(msg).unwrap();
             let expected_message = TEST_MESSAGE;
             assert_eq!(received_message, expected_message);
-            let mut vec = callback_messages.lock().unwrap();
-            vec.push(String::from(received_message));
+            callback_messages.lock().unwrap().push(String::from(received_message));
             Ok(())
         };
 
@@ -211,7 +211,7 @@ mod tests {
         let now = SystemTime::now();
         while messages.lock().unwrap().len() < expected_message_count {
             if now.elapsed().unwrap().as_millis() > 5000 {
-                panic!("a timeout occured")
+                panic!("timeout occured")
             }
             sleep(Duration::from_millis(100)).await;
         }
