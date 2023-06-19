@@ -31,8 +31,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let service = conversation::service::ConversationServiceImpl::new(Arc::clone(&interactor));
 
     let message_queue = amqp::MessageQueue::connect(&cfg.amqp_hostname.unwrap(), &cfg.amqp_port.unwrap()).await?;
-    let mut message_handler = conversation::message_handler::MessageHandler::new(Arc::clone(&interactor), message_queue);
-    message_handler.consume_new_chats().await;
+    let mut message_queue_handler = conversation::amqp::MessageQueueHandler::new(Arc::clone(&interactor), message_queue);
+    message_queue_handler.consume_new_chats().await;
 
     let server_addr = SocketAddr::new(cfg.service_hostname.unwrap().parse().unwrap(), cfg.service_port.unwrap().parse().unwrap());
     Server::builder()

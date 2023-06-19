@@ -1,5 +1,5 @@
 pub mod interactor;
-pub mod message_handler;
+pub mod amqp;
 pub mod service;
 
 pub mod pb {

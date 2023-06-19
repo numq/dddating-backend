@@ -11,12 +11,12 @@ const EXCHANGE_NAME: &str = "action";
 const ROUTING_KEY: &str = "chat";
 const QUEUE_NAME: &str = "create";
 
-pub struct MessageHandler {
+pub struct MessageQueueHandler {
     interactor: Arc<Box<dyn ConversationInteractor + Send + Sync>>,
     message_queue: MessageQueue,
 }
 
-impl MessageHandler {
+impl MessageQueueHandler {
     pub fn new(interactor: Arc<Box<dyn ConversationInteractor + Send + Sync>>, message_queue: MessageQueue) -> Self {
         Self {
             interactor,
