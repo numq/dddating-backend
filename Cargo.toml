@@ -3,7 +3,6 @@
 members = [
     #library
     "library/amqp",
-    "library/cache",
     "library/configuration",
     "library/error",
     "library/status",
