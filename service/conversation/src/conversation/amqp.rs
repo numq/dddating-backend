@@ -8,8 +8,8 @@ use amqp::MessageQueue;
 use crate::conversation::interactor::ConversationInteractor;
 
 const EXCHANGE_NAME: &str = "action";
-const ROUTING_KEY: &str = "chat";
-const QUEUE_NAME: &str = "create";
+const QUEUE_NAME: &str = "matchmaking";
+const ROUTING_KEY: &str = "match";
 
 pub struct MessageQueueHandler {
     interactor: Arc<Box<dyn ConversationInteractor + Send + Sync>>,

@@ -3,20 +3,28 @@ use tonic::transport::Channel;
 
 use crate::account::pb::{CreateAccountRequest, CreateAccountResponse, DeleteAccountRequest, DeleteAccountResponse, GetAccountByCredentialsRequest, GetAccountByCredentialsResponse, GetAccountByIdRequest, GetAccountByIdResponse, UpdateAccountRequest, UpdateAccountResponse};
 use crate::account::pb::account_service_client::AccountServiceClient;
-use crate::account::pb::account_service_server::AccountService;
 
-pub struct AccountApi {
+#[tonic::async_trait]
+pub trait AccountApi {
+    async fn get_account_by_id(&self, request: Request<GetAccountByIdRequest>) -> Result<Response<GetAccountByIdResponse>, Status>;
+    async fn get_account_by_credentials(&self, request: Request<GetAccountByCredentialsRequest>) -> Result<Response<GetAccountByCredentialsResponse>, Status>;
+    async fn create_account(&self, request: Request<CreateAccountRequest>) -> Result<Response<CreateAccountResponse>, Status>;
+    async fn update_account(&self, request: Request<UpdateAccountRequest>) -> Result<Response<UpdateAccountResponse>, Status>;
+    async fn delete_account(&self, request: Request<DeleteAccountRequest>) -> Result<Response<DeleteAccountResponse>, Status>;
+}
+
+pub struct AccountApiImpl {
     client: AccountServiceClient<Channel>,
 }
 
-impl AccountApi {
-    pub fn new(client: AccountServiceClient<Channel>) -> Box<dyn AccountService + Send + Sync> {
-        Box::new(AccountApi { client })
+impl AccountApiImpl {
+    pub fn new(client: AccountServiceClient<Channel>) -> Box<dyn AccountApi + Send + Sync> {
+        Box::new(AccountApiImpl { client })
     }
 }
 
 #[tonic::async_trait]
-impl AccountService for AccountApi {
+impl AccountApi for AccountApiImpl {
     async fn get_account_by_id(&self, request: Request<GetAccountByIdRequest>) -> Result<Response<GetAccountByIdResponse>, Status> {
         let GetAccountByIdRequest { id } = request.into_inner();
         if id.is_empty() {

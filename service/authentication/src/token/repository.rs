@@ -1,7 +1,7 @@
 use tonic::Request;
 
+use crate::token::api::TokenApi;
 use crate::token::pb::{GenerateAccessTokenRequest, GenerateAccessTokenResponse, GenerateRefreshTokenRequest, GenerateRefreshTokenResponse, InvalidateTokenRequest, InvalidateTokenResponse, ValidateTokenRequest, ValidateTokenResponse};
-use crate::token::pb::token_service_server::TokenService;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 
@@ -14,11 +14,11 @@ pub trait TokenRepository {
 }
 
 pub struct TokenRepositoryImpl {
-    api: Box<dyn TokenService + Send + Sync>,
+    api: Box<dyn TokenApi + Send + Sync>,
 }
 
 impl TokenRepositoryImpl {
-    pub fn new(api: Box<dyn TokenService + Send + Sync>) -> Box<dyn TokenRepository + Send + Sync> {
+    pub fn new(api: Box<dyn TokenApi + Send + Sync>) -> Box<dyn TokenRepository + Send + Sync> {
         Box::new(TokenRepositoryImpl { api })
     }
 }

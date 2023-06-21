@@ -1,9 +1,9 @@
 use tonic::Request;
 
 use crate::account;
+use crate::account::api::AccountApi;
 use crate::account::entity::{Account, Role};
 use crate::account::pb::{CreateAccountRequest, CreateAccountResponse, DeleteAccountRequest, DeleteAccountResponse, GetAccountByCredentialsRequest, GetAccountByCredentialsResponse, GetAccountByIdRequest, GetAccountByIdResponse, Role as RoleMessage, UpdateAccountRequest, UpdateAccountResponse};
-use crate::account::pb::account_service_server::AccountService;
 
 type Error = Box<dyn std::error::Error + Send + Sync>;
 
@@ -28,11 +28,11 @@ pub trait AccountRepository {
 }
 
 pub struct AccountRepositoryImpl {
-    api: Box<dyn AccountService + Send + Sync>,
+    api: Box<dyn AccountApi + Send + Sync>,
 }
 
 impl AccountRepositoryImpl {
-    pub fn new(api: Box<dyn AccountService + Send + Sync>) -> Box<dyn AccountRepository + Send + Sync> {
+    pub fn new(api: Box<dyn AccountApi + Send + Sync>) -> Box<dyn AccountRepository + Send + Sync> {
         Box::new(AccountRepositoryImpl { api })
     }
 }
