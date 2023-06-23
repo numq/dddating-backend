@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package criteria;
+
+enum Gender{
+  NON_BINARY = 0;
+  MALE = 1;
+  FEMALE = 2;
+}
+
+message Basics{
+  uint32 age = 1;
+  Gender gender = 2;
+  string location = 3;
+  repeated Gender preferences = 4;
+}
+
+message Filter{
+  uint32 min_age = 1;
+  uint32 max_age = 2;
+  string location = 3;
+  repeated Gender preferences = 4;
+}
