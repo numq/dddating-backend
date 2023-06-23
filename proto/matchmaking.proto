@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package matchmaking;
+
+message CheckIdsRequest{
+  string from_id = 1;
+  repeated string to_ids = 2;
+}
+
+message CheckIdsResponse{
+  repeated bool values = 1;
+}
+
+message GetLikesRequest{
+  string id = 1;
+  uint64 skip = 2;
+  uint64 limit = 3;
+}
+
+message GetLikesResponse{
+  repeated string identifiers = 1;
+}
+
+message LikeRequest{
+  string from_id = 1;
+  string to_id = 2;
+}
+
+message LikeResponse{
+  bool has_match = 1;
+}
+
+message DislikeRequest{
+  string from_id = 1;
+  string to_id = 2;
+}
+
+message DislikeResponse{
+}
+
+message BacktrackRequest{
+  string id = 1;
+}
+
+message BacktrackResponse{
+  string id = 1;
+}
+
+service MatchmakingService{
+  rpc CheckIds(CheckIdsRequest) returns (CheckIdsResponse);
+  rpc GetLikes(GetLikesRequest) returns (GetLikesResponse);
+  rpc Like(LikeRequest) returns (LikeResponse);
+  rpc Dislike(DislikeRequest) returns (DislikeResponse);
+  rpc Backtrack(BacktrackRequest) returns (BacktrackResponse);
+}
