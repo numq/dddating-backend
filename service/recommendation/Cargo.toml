@@ -1,0 +1,21 @@
+[package]
+name = "recommendation"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+amqp = { path = "../../library/amqp" }
+configuration = { path = "../../library/configuration" }
+error = { path = "../../library/error" }
+status = { path = "../../library/status" }
+async-trait = "0.1.68"
+futures = "0.3.28"
+lapin = "2.2.1"
+redis = "0.23.0"
+tonic = "0.9.1"
+prost = "0.11.6"
+tokio = { version = "1.24.2", features = ["rt-multi-thread"] }
+
+[build-dependencies]
+protoc-bin-vendored = "3.0.0"
+tonic-build = "0.9.1"

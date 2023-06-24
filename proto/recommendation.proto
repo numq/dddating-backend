@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package recommendation;
+
+import "criteria.proto";
+
+enum Gender{
+  MALE = 0;
+  FEMALE = 1;
+  NON_BINARY = 2;
+}
+
+message GetCandidatesRequest{
+  string excepted_id = 1;
+  criteria.Filter filter = 2;
+}
+
+message GetCandidatesResponse{
+  repeated string candidate_identifiers = 1;
+}
+
+service RecommendationService{
+  rpc GetCandidates(GetCandidatesRequest) returns (GetCandidatesResponse);
+}
