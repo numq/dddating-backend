@@ -1,0 +1,14 @@
+[package]
+name = "gateway"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+configuration = { path = "../../library/configuration" }
+tonic = "0.9.1"
+prost = "0.11.6"
+tokio = { version = "1.24.2", features = ["rt-multi-thread"] }
+
+[build-dependencies]
+protoc-bin-vendored = "3.0.0"
+tonic-build = "0.9.1"
