@@ -72,6 +72,6 @@ impl RecommendationRepository for RecommendationRepositoryImpl {
     async fn delete_candidate(&self, excepted_id: &str, candidate_id: &str) -> Result<(), Error> {
         let mut redis = self.redis_client.get_connection()?;
         let _ = redis.hdel(excepted_id, candidate_id)?;
-        return Ok(());
+        Ok(())
     }
 }

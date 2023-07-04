@@ -62,14 +62,14 @@ impl AuthenticationInteractor for AuthenticationInteractorImpl {
         if let Some(account) = self.account_repository.get_account_by_id(&id).await? {
             return self.create_tokens(account).await;
         }
-        return Err(make_error!("unable to sign up"));
+        Err(make_error!("unable to sign up"))
     }
 
     async fn sign_in(&self, email: &str, password: &str) -> Result<TokenPair, Error> {
         if let Some(account) = self.account_repository.get_account_by_credentials(email, password).await? {
             return self.create_tokens(account).await;
         }
-        return Err(make_error!("unable to sign in"));
+        Err(make_error!("unable to sign in"))
     }
 
     async fn sign_out(&self, access_token: &str, refresh_token: &str) -> Result<bool, Error> {
@@ -77,7 +77,7 @@ impl AuthenticationInteractor for AuthenticationInteractorImpl {
             let _ = self.invalidate_tokens(access_token, refresh_token).await;
             return Ok(true);
         }
-        return Ok(false);
+        Ok(false)
     }
 
     async fn change_password(&self, access_token: &str, refresh_token: &str, new_password: &str) -> Result<TokenPair, Error> {
@@ -92,14 +92,14 @@ impl AuthenticationInteractor for AuthenticationInteractorImpl {
                 return Ok(TokenPair::new(&access_token, &refresh_token));
             }
         }
-        return Err(make_error!("unable to change password"));
+        Err(make_error!("unable to change password"))
     }
 
     async fn refresh_token(&self, refresh_token: &str) -> Result<TokenPair, Error> {
         let payload = self.token_repository.validate_token(refresh_token).await?;
         let access_token = self.token_repository.generate_access_token(&payload).await?;
         let refresh_token = self.token_repository.generate_refresh_token(&payload).await?;
-        return Ok(TokenPair::new(&access_token, &refresh_token));
+        Ok(TokenPair::new(&access_token, &refresh_token))
     }
 
     async fn validate_token(&self, access_token: &str) -> Result<String, Error> {
