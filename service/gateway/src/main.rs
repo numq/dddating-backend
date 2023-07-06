@@ -8,11 +8,13 @@ use configuration::Config;
 mod authentication;
 mod conversation;
 mod matchmaking;
+mod profile;
 
 const SERVICE_NAME: &str = "gateway";
 const AUTHENTICATION_SERVICE_NAME: &str = "authentication";
 const CONVERSATION_SERVICE_NAME: &str = "conversation";
 const MATCHMAKING_SERVICE_NAME: &str = "matchmaking";
+const PROFILE_SERVICE_NAME: &str = "profile";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -35,11 +37,17 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let matchmaking_client = matchmaking::pb::matchmaking_service_client::MatchmakingServiceClient::new(matchmaking_channel);
     let matchmaking_service = matchmaking::service::MatchmakingServiceImpl::new(matchmaking_client);
 
+    let profile_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(PROFILE_SERVICE_NAME).unwrap());
+    let profile_channel = Channel::from_static(profile_channel_url).connect().await?;
+    let profile_client = profile::pb::profile_service_client::ProfileServiceClient::new(profile_channel);
+    let profile_service = profile::service::ProfileServiceImpl::new(profile_client);
+
     let server_addr = SocketAddr::new(cfg.service_hostname.unwrap().parse().unwrap(), cfg.service_port.unwrap().parse().unwrap());
     Server::builder()
         .add_service(authentication::pb::authentication_service_server::AuthenticationServiceServer::new(authentication_service))
         .add_service(conversation::pb::conversation_service_server::ConversationServiceServer::new(conversation_service))
         .add_service(matchmaking::pb::matchmaking_service_server::MatchmakingServiceServer::new(matchmaking_service))
+        .add_service(profile::pb::profile_service_server::ProfileServiceServer::new(profile_service))
         .serve(server_addr)
         .await?;
     Ok(())
