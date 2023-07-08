@@ -10,6 +10,7 @@ mod conversation;
 mod matchmaking;
 mod profile;
 mod recommendation;
+mod safety;
 
 const SERVICE_NAME: &str = "gateway";
 const AUTHENTICATION_SERVICE_NAME: &str = "authentication";
@@ -17,6 +18,7 @@ const CONVERSATION_SERVICE_NAME: &str = "conversation";
 const MATCHMAKING_SERVICE_NAME: &str = "matchmaking";
 const PROFILE_SERVICE_NAME: &str = "profile";
 const RECOMMENDATION_SERVICE_NAME: &str = "recommendation";
+const SAFETY_SERVICE_NAME: &str = "safety";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -49,6 +51,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let recommendation_client = recommendation::pb::recommendation_service_client::RecommendationServiceClient::new(recommendation_channel);
     let recommendation_service = recommendation::service::RecommendationServiceImpl::new(recommendation_client);
 
+    let safety_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(SAFETY_SERVICE_NAME).unwrap());
+    let safety_channel = Channel::from_static(safety_channel_url).connect().await?;
+    let safety_client = safety::pb::safety_service_client::SafetyServiceClient::new(safety_channel);
+    let safety_service = safety::service::SafetyServiceImpl::new(safety_client);
+
     let server_addr = SocketAddr::new(cfg.service_hostname.unwrap().parse().unwrap(), cfg.service_port.unwrap().parse().unwrap());
     Server::builder()
         .add_service(authentication::pb::authentication_service_server::AuthenticationServiceServer::new(authentication_service))
@@ -56,6 +63,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .add_service(matchmaking::pb::matchmaking_service_server::MatchmakingServiceServer::new(matchmaking_service))
         .add_service(profile::pb::profile_service_server::ProfileServiceServer::new(profile_service))
         .add_service(recommendation::pb::recommendation_service_server::RecommendationServiceServer::new(recommendation_service))
+        .add_service(safety::pb::safety_service_server::SafetyServiceServer::new(safety_service))
         .serve(server_addr)
         .await?;
     Ok(())
