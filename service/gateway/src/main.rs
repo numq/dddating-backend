@@ -11,6 +11,7 @@ mod matchmaking;
 mod profile;
 mod recommendation;
 mod safety;
+mod support;
 
 const SERVICE_NAME: &str = "gateway";
 const AUTHENTICATION_SERVICE_NAME: &str = "authentication";
@@ -19,6 +20,7 @@ const MATCHMAKING_SERVICE_NAME: &str = "matchmaking";
 const PROFILE_SERVICE_NAME: &str = "profile";
 const RECOMMENDATION_SERVICE_NAME: &str = "recommendation";
 const SAFETY_SERVICE_NAME: &str = "safety";
+const SUPPORT_SERVICE_NAME: &str = "support";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -56,6 +58,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let safety_client = safety::pb::safety_service_client::SafetyServiceClient::new(safety_channel);
     let safety_service = safety::service::SafetyServiceImpl::new(safety_client);
 
+    let support_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(SUPPORT_SERVICE_NAME).unwrap());
+    let support_channel = Channel::from_static(support_channel_url).connect().await?;
+    let support_client = support::pb::support_service_client::SupportServiceClient::new(support_channel);
+    let support_service = support::service::SupportServiceImpl::new(support_client);
+
     let server_addr = SocketAddr::new(cfg.service_hostname.unwrap().parse().unwrap(), cfg.service_port.unwrap().parse().unwrap());
     Server::builder()
         .add_service(authentication::pb::authentication_service_server::AuthenticationServiceServer::new(authentication_service))
@@ -64,6 +71,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .add_service(profile::pb::profile_service_server::ProfileServiceServer::new(profile_service))
         .add_service(recommendation::pb::recommendation_service_server::RecommendationServiceServer::new(recommendation_service))
         .add_service(safety::pb::safety_service_server::SafetyServiceServer::new(safety_service))
+        .add_service(support::pb::support_service_server::SupportServiceServer::new(support_service))
         .serve(server_addr)
         .await?;
     Ok(())
