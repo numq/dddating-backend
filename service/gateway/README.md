@@ -1,6 +1,7 @@
 # Gateway
 
-Microservice aggregation and addressing gateway
+Provides aggregation and addressing gateway functionality
+____
 
 ## Services
 
