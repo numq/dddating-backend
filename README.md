@@ -15,20 +15,13 @@ ____
 
 ### Microservices
 
+- [Gateway](./service/gateway)
 - [Authentication](./service/authentication)
-
     - [Account](./service/account)
-
     - [Token](./service/token)
-
 - [Conversation](./service/conversation)
-
 - [Matchmaking](./service/matchmaking)
-
 - [Profile](./service/profile)
-
 - [Recommendation](./service/recommendation)
-
 - [Safety](./service/safety)
-
 - [Support](./service/support)
