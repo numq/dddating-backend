@@ -3,7 +3,7 @@
 Provides aggregation and addressing gateway functionality
 ____
 
-## Services
+### Services
 
 - [Authentication](../authentication)
 - [Conversation](../conversation)
