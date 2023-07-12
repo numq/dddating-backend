@@ -9,7 +9,6 @@ error = { path = "../../library/error" }
 status = { path = "../../library/status" }
 async-trait = "0.1.68"
 futures = "0.3.28"
-amiquip = "0.4.2"
 mongodb = "2.3.1"
 serde = "1.0.154"
 tonic = "0.9.1"
