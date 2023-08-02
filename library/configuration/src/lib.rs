@@ -40,6 +40,10 @@ impl Config {
         })
     }
 
+    pub fn default(service_name: &str) -> Result<Self, Box<dyn Error>> {
+        Self::new(".env", service_name)
+    }
+
     pub fn find_port(&self, service_name: &str) -> Result<String, Box<dyn Error>> {
         var(format!("{}_PORT", service_name)).map_err(|err| Box::new(err) as Box<dyn Error>)
     }
@@ -52,7 +56,15 @@ mod tests {
     #[test]
     fn test_new() {
         let service_name = "test";
-        let config = Config::new("./test.env", service_name).unwrap();
+        let config = Config::new(".env", service_name).unwrap();
+        assert_eq!(config.service_hostname, Some(String::from("0.0.0.0")));
+        assert_eq!(config.service_port, Some(String::from("8080")));
+    }
+
+    #[test]
+    fn test_default() {
+        let service_name = "test";
+        let config = Config::default(service_name).unwrap();
         assert_eq!(config.service_hostname, Some(String::from("0.0.0.0")));
         assert_eq!(config.service_port, Some(String::from("8080")));
     }
