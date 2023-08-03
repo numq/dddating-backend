@@ -3,6 +3,10 @@ name = "token"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "token"
+path = "src/main.rs"
+
 [dependencies]
 configuration = { path = "../../library/configuration" }
 error = { path = "../../library/error" }

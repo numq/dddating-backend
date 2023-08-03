@@ -3,6 +3,10 @@ name = "account"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "account"
+path = "src/main.rs"
+
 [dependencies]
 configuration = { path = "../../library/configuration" }
 error = { path = "../../library/error" }
@@ -11,7 +15,7 @@ async-trait = "0.1.68"
 futures = "0.3.28"
 amiquip = "0.4.2"
 serde = "1.0.154"
-tonic = "0.9.1"
+tonic = "0.9.2"
 prost = "0.11.6"
 tokio = { version = "1.24.2", features = ["rt-multi-thread"] }
 mongodb = "2.3.1"

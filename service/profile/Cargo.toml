@@ -3,6 +3,10 @@ name = "profile"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "profile"
+path = "src/main.rs"
+
 [dependencies]
 configuration = { path = "../../library/configuration" }
 error = { path = "../../library/error" }

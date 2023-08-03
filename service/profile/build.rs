@@ -1,5 +1,18 @@
 fn main() {
-    std::env::set_var("PROTOC", protoc_bin_vendored::protoc_bin_path().unwrap());
-    tonic_build::compile_protos("../../proto/criteria.proto").expect("unable to run protoc");
-    tonic_build::compile_protos("../../proto/profile.proto").expect("unable to run protoc");
+    if std::env::var("RELEASE").is_ok() {
+        std::env::set_var("PROTOC", "/usr/bin/protoc");
+        tonic_build::configure()
+            .compile(&[
+                "proto/criteria.proto",
+                "proto/profile.proto"
+            ], &["proto"])
+            .expect("unable to run protoc");
+    } else {
+        tonic_build::configure()
+            .compile(&[
+                "../../proto/criteria.proto",
+                "../../proto/profile.proto"
+            ], &["../../proto"])
+            .expect("unable to run protoc");
+    }
 }

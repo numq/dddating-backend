@@ -19,7 +19,7 @@ const PROFILE_SERVICE_NAME: &str = "profile";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let cfg = Config::new("service/.env", SERVICE_NAME)?;
+    let cfg = Config::default(SERVICE_NAME)?;
 
     let redis_client = redis::Client::open(format!("redis://{}:{}", cfg.redis_hostname.clone().unwrap(), cfg.redis_port.clone().unwrap()))?;
 

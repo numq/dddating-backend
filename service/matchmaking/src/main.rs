@@ -13,7 +13,7 @@ const LIKE_COLLECTION: &str = "likes";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let cfg = Config::new("service/.env", SERVICE_NAME)?;
+    let cfg = Config::default(SERVICE_NAME)?;
 
     let mongodb = mongodb::Client::with_uri_str(format!("mongodb://{}:{}", cfg.mongo_hostname.unwrap(), cfg.mongo_port.unwrap())).await?;
     let database = mongodb.database(SERVICE_NAME);

@@ -24,7 +24,7 @@ const SUPPORT_SERVICE_NAME: &str = "support";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let cfg = Config::new("service/.env", SERVICE_NAME)?;
+    let cfg = Config::default(SERVICE_NAME)?;
 
     let create_channel_url: fn(&str, &str) -> &'static str = |hostname, port| Box::leak(format!("https://{}:{}", hostname, port).into_boxed_str());
 

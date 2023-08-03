@@ -3,6 +3,10 @@ name = "gateway"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "gateway"
+path = "src/main.rs"
+
 [dependencies]
 configuration = { path = "../../library/configuration" }
 tonic = "0.9.1"

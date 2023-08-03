@@ -9,7 +9,7 @@ const SERVICE_NAME: &str = "token";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let cfg = configuration::Config::new("service/.env", SERVICE_NAME)?;
+    let cfg = configuration::Config::default(SERVICE_NAME)?;
 
     let redis_client = redis::Client::open(format!("redis://{}:{}", cfg.redis_hostname.unwrap(), cfg.redis_port.unwrap()))?;
 
