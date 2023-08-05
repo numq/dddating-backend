@@ -1,0 +1,171 @@
+version: '3'
+services:
+  rabbitmq:
+    image: rabbitmq:latest
+    restart: on-failure
+    ports:
+      - '5673:5672'
+
+  authentication:
+    build:
+      args:
+        SERVICE_NAME: authentication
+    depends_on:
+      - account
+      - token
+    environment:
+      SERVICE_NAME: authentication
+    volumes:
+      - ./:/data
+    ports:
+      - '8080:8080'
+
+  account:
+    build:
+      args:
+        SERVICE_NAME: account
+    depends_on:
+      - account-mongo
+    volumes:
+      - ./:/data
+    restart: on-failure
+    ports:
+      - '8001:8001'
+  account-mongo:
+    image: mongo:latest
+    restart: on-failure
+    ports:
+      - '27018:27017'
+
+  token:
+    build:
+      args:
+        SERVICE_NAME: token
+    depends_on:
+      - token-redis
+    volumes:
+      - ./:/data
+    ports:
+      - '8002:8002'
+  token-redis:
+    image: redis:latest
+    restart: on-failure
+    ports:
+      - '6380:6379'
+
+  conversation:
+    build:
+      args:
+        SERVICE_NAME: conversation
+    depends_on:
+      - conversation-mongo
+    volumes:
+      - ./:/data
+    ports:
+      - '8010:8010'
+  conversation-mongo:
+    image: mongo:latest
+    restart: on-failure
+    ports:
+      - '27019:27017'
+
+  matchmaking:
+    build:
+      args:
+        SERVICE_NAME: matchmaking
+    depends_on:
+      - matchmaking-redis
+      - matchmaking-mongo
+    volumes:
+      - ./:/data
+    ports:
+      - '8011:8011'
+  matchmaking-redis:
+    image: redis:latest
+    restart: on-failure
+    ports:
+      - '6381:6379'
+  matchmaking-mongo:
+    image: mongo:latest
+    restart: on-failure
+    ports:
+      - '27020:27017'
+
+  profile:
+    build:
+      args:
+        SERVICE_NAME: profile
+    depends_on:
+      - profile-redis
+      - profile-mongo
+    volumes:
+      - ./:/data
+    ports:
+      - '8012:8012'
+  profile-redis:
+    image: redis:latest
+    restart: on-failure
+    ports:
+      - '6382:6379'
+  profile-mongo:
+    image: mongo:latest
+    restart: on-failure
+    ports:
+      - '27021:27017'
+
+  recommendation:
+    build:
+      args:
+        SERVICE_NAME: recommendation
+    depends_on:
+      - recommendation-redis
+    volumes:
+      - ./:/data
+    ports:
+      - '8013:8013'
+  recommendation-redis:
+    image: redis:latest
+    restart: on-failure
+    ports:
+      - '6383:6379'
+
+  safety:
+    build:
+      args:
+        SERVICE_NAME: safety
+    depends_on:
+      - safety-mongo
+    volumes:
+      - ./:/data
+    ports:
+      - '8014:8014'
+  safety-mongo:
+    image: mongo:latest
+    restart: on-failure
+    ports:
+      - '27022:27017'
+
+  support:
+    build:
+      args:
+        SERVICE_NAME: support
+    depends_on:
+      - support-mongo
+    volumes:
+      - ./:/data
+    ports:
+      - '8015:8015'
+  support-mongo:
+    image: mongo:latest
+    restart: on-failure
+    ports:
+      - '27023:27017'
+
+  gateway:
+    build:
+      args:
+        SERVICE_NAME: gateway
+    volumes:
+      - ./:/data
+    ports:
+      - '8080:8080'
