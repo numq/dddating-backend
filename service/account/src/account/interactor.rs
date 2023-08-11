@@ -23,6 +23,7 @@ pub trait AccountInteractor {
         password: Option<String>,
         role: Option<Role>,
     ) -> Result<Account, Error>;
+    async fn update_premium(&self, id: &str, premium_expiration_date: u64) -> Result<Account, Error>;
     async fn delete_account(&self, id: &str) -> Result<String, Error>;
 }
 
@@ -64,7 +65,11 @@ impl AccountInteractor for AccountInteractorImpl {
                 .map(|(h, s)| (Some(h), Some(s)))?,
             _ => (None, None)
         };
-        self.repository.update_account(id, email, hash, salt, role).await
+        self.repository.update_account(id, email, hash, salt, role, None).await
+    }
+
+    async fn update_premium(&self, id: &str, premium_expiration_date: u64) -> Result<Account, Error> {
+        self.repository.update_account(id, None, None, None, None, Some(premium_expiration_date)).await
     }
 
     async fn delete_account(&self, id: &str) -> Result<String, Error> {

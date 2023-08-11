@@ -1,4 +1,4 @@
-use mongodb::bson::{bson, doc};
+use mongodb::bson::{bson, Bson, doc};
 use mongodb::bson::oid::ObjectId;
 use mongodb::Collection;
 
@@ -26,6 +26,7 @@ pub trait AccountRepository {
         password_hash: Option<String>,
         password_salt: Option<String>,
         role: Option<Role>,
+        premium_expiration_date: Option<u64>,
     ) -> Result<Account, Error>;
     async fn delete_account(&self, id: &str) -> Result<String, Error>;
 }
@@ -67,7 +68,15 @@ impl AccountRepository for AccountRepositoryImpl {
         Err(make_error!("unable to create account"))
     }
 
-    async fn update_account(&self, id: &str, email: Option<String>, password_hash: Option<String>, password_salt: Option<String>, role: Option<Role>) -> Result<Account, Error> {
+    async fn update_account(
+        &self,
+        id: &str,
+        email: Option<String>,
+        password_hash: Option<String>,
+        password_salt: Option<String>,
+        role: Option<Role>,
+        premium_expiration_date: Option<u64>,
+    ) -> Result<Account, Error> {
         let timestamp = bson!(Account::timestamp_now() as i64);
         let mut document = doc! { "updated_at": timestamp };
         if let Some(email) = email {
@@ -82,6 +91,9 @@ impl AccountRepository for AccountRepositoryImpl {
                 Role::User => 0,
                 Role::Moderator => 1
             });
+        }
+        if let Some(premium_expiration_date) = premium_expiration_date {
+            document.insert("premium_expiration_date", Bson::Int64(premium_expiration_date as i64));
         }
         let result = self.collection.update_one(doc! { "_id": id }, document, None).await?;
         if result.modified_count > 0 {

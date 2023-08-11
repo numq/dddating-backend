@@ -13,8 +13,9 @@ message Account{
   string password_hash = 3;
   string password_salt = 4;
   Role role = 5;
-  uint64 created_at = 6;
-  uint64 updated_at = 7;
+  uint64 premium_expiration_date = 6;
+  uint64 created_at = 7;
+  uint64 updated_at = 8;
 }
 
 message GetAccountByIdRequest{

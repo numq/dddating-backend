@@ -16,6 +16,7 @@ pub struct Account {
     pub password_hash: String,
     pub password_salt: String,
     pub role: Role,
+    pub premium_expiration_date: u64,
     pub created_at: u64,
     pub updated_at: u64,
 }
@@ -33,6 +34,7 @@ impl Account {
             password_hash: String::from(password_hash),
             password_salt: String::from(password_salt),
             role,
+            premium_expiration_date: 0,
             created_at: now,
             updated_at: now,
         }
