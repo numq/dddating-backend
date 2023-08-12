@@ -12,6 +12,7 @@ pub struct Account {
     pub password_hash: String,
     pub password_salt: String,
     pub role: Role,
+    pub premium_expiration_date: u64,
     pub created_at: u64,
     pub updated_at: u64,
 }

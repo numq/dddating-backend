@@ -48,7 +48,7 @@ impl AccountRepository for AccountRepositoryImpl {
         Ok(account.map(|a| a.into()))
     }
 
-    async fn get_account_by_credentials(&self, email: &str, password: &str) -> Result<Option<account::entity::Account>, Error> {
+    async fn get_account_by_credentials(&self, email: &str, password: &str) -> Result<Option<Account>, Error> {
         let GetAccountByCredentialsResponse { account } = self.api.get_account_by_credentials(
             Request::new(
                 GetAccountByCredentialsRequest {

@@ -12,6 +12,7 @@ impl From<AccountMessage> for Account {
                 RoleMessage::User => Role::User,
                 RoleMessage::Moderator => Role::Moderator
             },
+            premium_expiration_date: value.premium_expiration_date,
             created_at: value.created_at,
             updated_at: value.updated_at,
         }
@@ -29,6 +30,7 @@ impl From<Account> for AccountMessage {
                 Role::User => RoleMessage::User,
                 Role::Moderator => RoleMessage::Moderator
             }),
+            premium_expiration_date: value.premium_expiration_date,
             created_at: value.created_at,
             updated_at: value.updated_at,
         }
