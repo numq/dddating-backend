@@ -5,6 +5,8 @@ use tonic::transport::{Channel, Server};
 
 use configuration::Config;
 
+mod interceptor;
+
 mod authentication;
 mod conversation;
 mod matchmaking;
@@ -67,15 +69,18 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     println!("Service '{}' started at address: {}", SERVICE_NAME, server_addr);
 
+    let authorization_interceptor = interceptor::authorization::AuthorizationInterceptor::new();
+
     Server::builder()
         .add_service(authentication::pb::authentication_service_server::AuthenticationServiceServer::new(authentication_service))
-        .add_service(conversation::pb::conversation_service_server::ConversationServiceServer::new(conversation_service))
-        .add_service(matchmaking::pb::matchmaking_service_server::MatchmakingServiceServer::new(matchmaking_service))
-        .add_service(profile::pb::profile_service_server::ProfileServiceServer::new(profile_service))
-        .add_service(recommendation::pb::recommendation_service_server::RecommendationServiceServer::new(recommendation_service))
-        .add_service(safety::pb::safety_service_server::SafetyServiceServer::new(safety_service))
-        .add_service(support::pb::support_service_server::SupportServiceServer::new(support_service))
+        .add_service(conversation::pb::conversation_service_server::ConversationServiceServer::with_interceptor(conversation_service, authorization_interceptor))
+        .add_service(matchmaking::pb::matchmaking_service_server::MatchmakingServiceServer::with_interceptor(matchmaking_service, authorization_interceptor))
+        .add_service(profile::pb::profile_service_server::ProfileServiceServer::with_interceptor(profile_service, authorization_interceptor))
+        .add_service(recommendation::pb::recommendation_service_server::RecommendationServiceServer::with_interceptor(recommendation_service, authorization_interceptor))
+        .add_service(safety::pb::safety_service_server::SafetyServiceServer::with_interceptor(safety_service, authorization_interceptor))
+        .add_service(support::pb::support_service_server::SupportServiceServer::with_interceptor(support_service, authorization_interceptor))
         .serve(server_addr)
         .await?;
+
     Ok(())
 }
