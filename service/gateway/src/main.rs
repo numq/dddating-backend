@@ -1,5 +1,6 @@
 use std::error::Error;
 use std::net::SocketAddr;
+use std::sync::Arc;
 
 use tonic::transport::{Channel, Server};
 
@@ -33,7 +34,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let authentication_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(AUTHENTICATION_SERVICE_NAME).unwrap());
     let authentication_channel = Channel::from_static(authentication_channel_url).connect_lazy();
     let authentication_client = authentication::pb::authentication_service_client::AuthenticationServiceClient::new(authentication_channel);
-    let authentication_service = authentication::service::AuthenticationServiceImpl::new(authentication_client);
+    let authentication_service = authentication::service::AuthenticationServiceImpl::new(authentication_client.clone());
+
+    let authentication_api = authentication::api::AuthenticationApiImpl::new(authentication_client.clone());
+    let authentication_repository = authentication::repository::AuthenticationRepositoryImpl::new(authentication_api);
+    let authentication_interactor = Arc::new(authentication::interactor::AuthenticationInteractorImpl::new(authentication_repository));
 
     let conversation_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(CONVERSATION_SERVICE_NAME).unwrap());
     let conversation_channel = Channel::from_static(conversation_channel_url).connect_lazy();
@@ -69,16 +74,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     println!("Service '{}' started at address: {}", SERVICE_NAME, server_addr);
 
-    let authorization_interceptor = interceptor::authorization::AuthorizationInterceptor::new();
-
     Server::builder()
         .add_service(authentication::pb::authentication_service_server::AuthenticationServiceServer::new(authentication_service))
-        .add_service(conversation::pb::conversation_service_server::ConversationServiceServer::with_interceptor(conversation_service, authorization_interceptor))
-        .add_service(matchmaking::pb::matchmaking_service_server::MatchmakingServiceServer::with_interceptor(matchmaking_service, authorization_interceptor))
-        .add_service(profile::pb::profile_service_server::ProfileServiceServer::with_interceptor(profile_service, authorization_interceptor))
-        .add_service(recommendation::pb::recommendation_service_server::RecommendationServiceServer::with_interceptor(recommendation_service, authorization_interceptor))
-        .add_service(safety::pb::safety_service_server::SafetyServiceServer::with_interceptor(safety_service, authorization_interceptor))
-        .add_service(support::pb::support_service_server::SupportServiceServer::with_interceptor(support_service, authorization_interceptor))
+        .add_service(interceptor::authorization::with_auth_interceptor(conversation::pb::conversation_service_server::ConversationServiceServer::new(conversation_service), Arc::clone(&authentication_interactor)))
+        .add_service(interceptor::authorization::with_auth_interceptor(matchmaking::pb::matchmaking_service_server::MatchmakingServiceServer::new(matchmaking_service), Arc::clone(&authentication_interactor)))
+        .add_service(interceptor::authorization::with_auth_interceptor(profile::pb::profile_service_server::ProfileServiceServer::new(profile_service), Arc::clone(&authentication_interactor)))
+        .add_service(interceptor::authorization::with_auth_interceptor(recommendation::pb::recommendation_service_server::RecommendationServiceServer::new(recommendation_service), Arc::clone(&authentication_interactor)))
+        .add_service(interceptor::authorization::with_auth_interceptor(safety::pb::safety_service_server::SafetyServiceServer::new(safety_service), Arc::clone(&authentication_interactor)))
+        .add_service(interceptor::authorization::with_auth_interceptor(support::pb::support_service_server::SupportServiceServer::new(support_service), Arc::clone(&authentication_interactor)))
         .serve(server_addr)
         .await?;
 

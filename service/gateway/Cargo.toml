@@ -9,8 +9,9 @@ path = "src/main.rs"
 
 [dependencies]
 configuration = { path = "../../library/configuration" }
+interceptor = { path = "../../library/interceptor" }
 async-trait = "0.1.73"
-tonic = "0.9.1"
+tonic = "0.9.2"
 tower = "0.4.13"
 prost = "0.11.6"
 tokio = { version = "1.24.2", features = ["rt-multi-thread"] }
