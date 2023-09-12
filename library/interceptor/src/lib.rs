@@ -1,5 +1,3 @@
-/// https://github.com/arcanyx-pub/tonic-async-interceptor
-
 use bytes::Bytes;
 use http::{Method, Uri, Version};
 use http_body::Body;
