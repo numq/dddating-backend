@@ -8,6 +8,7 @@ fn main() {
             ], &["proto"])
             .expect("unable to run protoc");
     } else {
+        std::env::set_var("PROTOC", protoc_bin_vendored::protoc_bin_path().unwrap());
         tonic_build::configure()
             .compile(&[
                 "../../proto/criteria.proto",
