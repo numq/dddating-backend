@@ -79,6 +79,8 @@ services:
         SERVICE_NAME: conversation
     env_file:
       - .env
+    environment:
+      AMQP_HOSTNAME: host.docker.internal
     depends_on:
       - mongo
       - amqp
@@ -94,6 +96,8 @@ services:
         SERVICE_NAME: matchmaking
     env_file:
       - .env
+    environment:
+      AMQP_HOSTNAME: host.docker.internal
     depends_on:
       - mongo
       - redis
@@ -124,6 +128,10 @@ services:
         SERVICE_NAME: recommendation
     env_file:
       - .env
+    environment:
+      AMQP_HOSTNAME: host.docker.internal
+      MATCHMAKING_HOSTNAME: host.docker.internal
+      PROFILE_HOSTNAME: host.docker.internal
     depends_on:
       - redis
       - matchmaking
