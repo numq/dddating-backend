@@ -4,8 +4,6 @@ use std::sync::Arc;
 
 use tonic::transport::{Channel, Server};
 
-use configuration::Config;
-
 use crate::matchmaking::pb::matchmaking_service_client::MatchmakingServiceClient;
 use crate::profile::pb::profile_service_client::ProfileServiceClient;
 
@@ -19,18 +17,20 @@ const PROFILE_SERVICE_NAME: &str = "profile";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let cfg = Config::default(SERVICE_NAME)?;
+    let cfg = configuration::Config::default(SERVICE_NAME)?;
+    let matchmaking_cfg = configuration::Config::default(MATCHMAKING_SERVICE_NAME)?;
+    let profile_cfg = configuration::Config::default(PROFILE_SERVICE_NAME)?;
 
-    let redis_client = redis::Client::open(format!("redis://{}:{}", cfg.redis_hostname.clone().unwrap(), cfg.redis_port.clone().unwrap()))?;
+    let redis_client = redis::Client::open(format!("redis://{}:{}", cfg.redis_hostname.unwrap(), cfg.redis_port.unwrap()))?;
 
     let create_channel_url: fn(&str, &str) -> &'static str = |hostname, port| Box::leak(format!("https://{}:{}", hostname, port).into_boxed_str());
 
-    let matchmaking_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(MATCHMAKING_SERVICE_NAME).unwrap());
+    let matchmaking_channel_url = create_channel_url(&matchmaking_cfg.service_hostname.unwrap(), &matchmaking_cfg.service_port.unwrap());
     let matchmaking_channel = Channel::from_static(matchmaking_channel_url).connect().await?;
     let matchmaking_client = MatchmakingServiceClient::new(matchmaking_channel);
     let matchmaking_api = matchmaking::api::MatchmakingApiImpl::new(matchmaking_client);
 
-    let profile_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(PROFILE_SERVICE_NAME).unwrap());
+    let profile_channel_url = create_channel_url(&profile_cfg.service_hostname.unwrap(), &profile_cfg.service_port.unwrap());
     let profile_channel = Channel::from_static(profile_channel_url).connect().await?;
     let profile_client = ProfileServiceClient::new(profile_channel);
     let profile_api = profile::api::ProfileApiImpl::new(profile_client);

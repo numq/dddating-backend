@@ -4,7 +4,6 @@ use std::path::Path;
 
 pub struct Config {
     pub secret_key: Option<String>,
-    pub default_hostname: Option<String>,
     pub amqp_hostname: Option<String>,
     pub amqp_port: Option<String>,
     pub mongo_hostname: Option<String>,
@@ -28,24 +27,19 @@ impl Config {
         let service_name = service_name.trim().to_uppercase();
         Ok(Self {
             secret_key: var("SECRET_KEY").ok(),
-            default_hostname: var("DEFAULT_HOSTNAME").ok(),
-            amqp_hostname: var("DEFAULT_HOSTNAME").ok(),
+            amqp_hostname: var("AMQP_HOSTNAME").ok(),
             amqp_port: var("AMQP_PORT").ok(),
-            redis_hostname: var("DEFAULT_HOSTNAME").ok(),
+            redis_hostname: var("REDIS_HOSTNAME").ok(),
             redis_port: var("REDIS_PORT").ok(),
-            mongo_hostname: var("DEFAULT_HOSTNAME").ok(),
+            mongo_hostname: var("MONGO_HOSTNAME").ok(),
             mongo_port: var("MONGO_PORT").ok(),
-            service_hostname: var(format!("{}_HOSTNAME", service_name)).or_else(|_| var("DEFAULT_HOSTNAME")).ok(),
+            service_hostname: var(format!("{}_HOSTNAME", service_name)).ok(),
             service_port: var(format!("{}_PORT", service_name)).ok(),
         })
     }
 
     pub fn default(service_name: &str) -> Result<Self, Box<dyn Error>> {
-        Self::new(".env", service_name)
-    }
-
-    pub fn find_port(&self, service_name: &str) -> Result<String, Box<dyn Error>> {
-        var(format!("{}_PORT", service_name)).map_err(|err| Box::new(err) as Box<dyn Error>)
+        Self::new(".env", &service_name.to_uppercase())
     }
 }
 

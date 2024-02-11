@@ -4,8 +4,6 @@ use std::sync::Arc;
 
 use tonic::transport::{Channel, Server};
 
-use configuration::Config;
-
 mod interceptor;
 
 mod authentication;
@@ -27,11 +25,18 @@ const SUPPORT_SERVICE_NAME: &str = "support";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let cfg = Config::default(SERVICE_NAME)?;
+    let cfg = configuration::Config::default(SERVICE_NAME)?;
+    let authentication_cfg = configuration::Config::default(AUTHENTICATION_SERVICE_NAME)?;
+    let conversation_cfg = configuration::Config::default(CONVERSATION_SERVICE_NAME)?;
+    let matchmaking_cfg = configuration::Config::default(MATCHMAKING_SERVICE_NAME)?;
+    let profile_cfg = configuration::Config::default(PROFILE_SERVICE_NAME)?;
+    let recommendation_cfg = configuration::Config::default(RECOMMENDATION_SERVICE_NAME)?;
+    let safety_cfg = configuration::Config::default(SAFETY_SERVICE_NAME)?;
+    let support_cfg = configuration::Config::default(SUPPORT_SERVICE_NAME)?;
 
     let create_channel_url: fn(&str, &str) -> &'static str = |hostname, port| Box::leak(format!("https://{}:{}", hostname, port).into_boxed_str());
 
-    let authentication_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(AUTHENTICATION_SERVICE_NAME).unwrap());
+    let authentication_channel_url = create_channel_url(&authentication_cfg.service_hostname.unwrap(), &authentication_cfg.service_port.unwrap());
     let authentication_channel = Channel::from_static(authentication_channel_url).connect_lazy();
     let authentication_client = authentication::pb::authentication_service_client::AuthenticationServiceClient::new(authentication_channel);
     let authentication_service = authentication::service::AuthenticationServiceImpl::new(authentication_client.clone());
@@ -40,32 +45,32 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let authentication_repository = authentication::repository::AuthenticationRepositoryImpl::new(authentication_api);
     let authentication_interactor = Arc::new(authentication::interactor::AuthenticationInteractorImpl::new(authentication_repository));
 
-    let conversation_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(CONVERSATION_SERVICE_NAME).unwrap());
+    let conversation_channel_url = create_channel_url(&conversation_cfg.service_hostname.unwrap(), &conversation_cfg.service_port.unwrap());
     let conversation_channel = Channel::from_static(conversation_channel_url).connect_lazy();
     let conversation_client = conversation::pb::conversation_service_client::ConversationServiceClient::new(conversation_channel);
     let conversation_service = conversation::service::ConversationServiceImpl::new(conversation_client);
 
-    let matchmaking_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(MATCHMAKING_SERVICE_NAME).unwrap());
+    let matchmaking_channel_url = create_channel_url(&matchmaking_cfg.service_hostname.unwrap(), &matchmaking_cfg.service_port.unwrap());
     let matchmaking_channel = Channel::from_static(matchmaking_channel_url).connect_lazy();
     let matchmaking_client = matchmaking::pb::matchmaking_service_client::MatchmakingServiceClient::new(matchmaking_channel);
     let matchmaking_service = matchmaking::service::MatchmakingServiceImpl::new(matchmaking_client);
 
-    let profile_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(PROFILE_SERVICE_NAME).unwrap());
+    let profile_channel_url = create_channel_url(&profile_cfg.service_hostname.unwrap(), &profile_cfg.service_port.unwrap());
     let profile_channel = Channel::from_static(profile_channel_url).connect_lazy();
     let profile_client = profile::pb::profile_service_client::ProfileServiceClient::new(profile_channel);
     let profile_service = profile::service::ProfileServiceImpl::new(profile_client);
 
-    let recommendation_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(RECOMMENDATION_SERVICE_NAME).unwrap());
+    let recommendation_channel_url = create_channel_url(&recommendation_cfg.service_hostname.unwrap(), &recommendation_cfg.service_port.unwrap());
     let recommendation_channel = Channel::from_static(recommendation_channel_url).connect_lazy();
     let recommendation_client = recommendation::pb::recommendation_service_client::RecommendationServiceClient::new(recommendation_channel);
     let recommendation_service = recommendation::service::RecommendationServiceImpl::new(recommendation_client);
 
-    let safety_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(SAFETY_SERVICE_NAME).unwrap());
+    let safety_channel_url = create_channel_url(&safety_cfg.service_hostname.unwrap(), &safety_cfg.service_port.unwrap());
     let safety_channel = Channel::from_static(safety_channel_url).connect_lazy();
     let safety_client = safety::pb::safety_service_client::SafetyServiceClient::new(safety_channel);
     let safety_service = safety::service::SafetyServiceImpl::new(safety_client);
 
-    let support_channel_url = create_channel_url(&cfg.default_hostname.clone().unwrap(), &cfg.find_port(SUPPORT_SERVICE_NAME).unwrap());
+    let support_channel_url = create_channel_url(&support_cfg.service_hostname.unwrap(), &support_cfg.service_port.unwrap());
     let support_channel = Channel::from_static(support_channel_url).connect_lazy();
     let support_client = support::pb::support_service_client::SupportServiceClient::new(support_channel);
     let support_service = support::service::SupportServiceImpl::new(support_client);

@@ -1,171 +1,183 @@
 version: '3'
 services:
-  rabbitmq:
+  amqp:
     image: rabbitmq:latest
-    restart: on-failure
-    ports:
-      - '5673:5672'
-
-  authentication:
-    build:
-      args:
-        SERVICE_NAME: authentication
-    depends_on:
-      - account
-      - token
-    environment:
-      SERVICE_NAME: authentication
+    env_file:
+      - .env
     volumes:
       - ./:/data
     ports:
-      - '8080:8080'
+      - '${AMQP_PORT}:${AMQP_PORT}'
+    restart: on-failure
+
+  redis:
+    image: redis:latest
+    env_file:
+      - .env
+    volumes:
+      - ./:/data
+    ports:
+      - '${REDIS_PORT}:${REDIS_PORT}'
+    restart: on-failure
+
+  mongo:
+    image: mongo:latest
+    env_file:
+      - .env
+    volumes:
+      - ./:/data
+    ports:
+      - '${MONGO_PORT}:${MONGO_PORT}'
+    restart: on-failure
 
   account:
     build:
       args:
         SERVICE_NAME: account
+    env_file:
+      - .env
     depends_on:
-      - account-mongo
+      - mongo
     volumes:
       - ./:/data
-    restart: on-failure
     ports:
-      - '8001:8001'
-  account-mongo:
-    image: mongo:latest
+      - '${ACCOUNT_PORT}:${ACCOUNT_PORT}'
     restart: on-failure
-    ports:
-      - '27018:27017'
 
   token:
     build:
       args:
         SERVICE_NAME: token
+    env_file:
+      - .env
     depends_on:
-      - token-redis
+      - redis
     volumes:
       - ./:/data
     ports:
-      - '8002:8002'
-  token-redis:
-    image: redis:latest
+      - '${TOKEN_PORT}:${TOKEN_PORT}'
     restart: on-failure
+
+  authentication:
+    build:
+      args:
+        SERVICE_NAME: authentication
+    env_file:
+      - .env
+    depends_on:
+      - account
+      - token
+    volumes:
+      - ./:/data
     ports:
-      - '6380:6379'
+      - '${AUTHENTICATION_PORT}:${AUTHENTICATION_PORT}'
+    restart: on-failure
 
   conversation:
     build:
       args:
         SERVICE_NAME: conversation
+    env_file:
+      - .env
     depends_on:
-      - conversation-mongo
+      - mongo
+      - amqp
     volumes:
       - ./:/data
     ports:
-      - '8010:8010'
-  conversation-mongo:
-    image: mongo:latest
+      - '${CONVERSATION_PORT}:${CONVERSATION_PORT}'
     restart: on-failure
-    ports:
-      - '27019:27017'
 
   matchmaking:
     build:
       args:
         SERVICE_NAME: matchmaking
+    env_file:
+      - .env
     depends_on:
-      - matchmaking-redis
-      - matchmaking-mongo
+      - mongo
+      - redis
+      - amqp
     volumes:
       - ./:/data
     ports:
-      - '8011:8011'
-  matchmaking-redis:
-    image: redis:latest
+      - '${MATCHMAKING_PORT}:${MATCHMAKING_PORT}'
     restart: on-failure
-    ports:
-      - '6381:6379'
-  matchmaking-mongo:
-    image: mongo:latest
-    restart: on-failure
-    ports:
-      - '27020:27017'
 
   profile:
     build:
       args:
         SERVICE_NAME: profile
+    env_file:
+      - .env
     depends_on:
-      - profile-redis
-      - profile-mongo
+      - mongo
     volumes:
       - ./:/data
     ports:
-      - '8012:8012'
-  profile-redis:
-    image: redis:latest
+      - '${PROFILE_PORT}:${PROFILE_PORT}'
     restart: on-failure
-    ports:
-      - '6382:6379'
-  profile-mongo:
-    image: mongo:latest
-    restart: on-failure
-    ports:
-      - '27021:27017'
 
   recommendation:
     build:
       args:
         SERVICE_NAME: recommendation
+    env_file:
+      - .env
     depends_on:
-      - recommendation-redis
+      - redis
+      - matchmaking
+      - profile
     volumes:
       - ./:/data
     ports:
-      - '8013:8013'
-  recommendation-redis:
-    image: redis:latest
+      - '${RECOMMENDATION_PORT}:${RECOMMENDATION_PORT}'
     restart: on-failure
-    ports:
-      - '6383:6379'
 
   safety:
     build:
       args:
         SERVICE_NAME: safety
+    env_file:
+      - .env
     depends_on:
-      - safety-mongo
+      - mongo
     volumes:
       - ./:/data
     ports:
-      - '8014:8014'
-  safety-mongo:
-    image: mongo:latest
+      - '${SAFETY_PORT}:${SAFETY_PORT}'
     restart: on-failure
-    ports:
-      - '27022:27017'
 
   support:
     build:
       args:
         SERVICE_NAME: support
+    env_file:
+      - .env
     depends_on:
-      - support-mongo
+      - mongo
     volumes:
       - ./:/data
     ports:
-      - '8015:8015'
-  support-mongo:
-    image: mongo:latest
+      - '${SUPPORT_PORT}:${SUPPORT_PORT}'
     restart: on-failure
-    ports:
-      - '27023:27017'
 
   gateway:
     build:
       args:
         SERVICE_NAME: gateway
+    env_file:
+      - .env
+    depends_on:
+      - authentication
+      - conversation
+      - matchmaking
+      - profile
+      - recommendation
+      - safety
+      - support
     volumes:
       - ./:/data
     ports:
-      - '8080:8080'
+      - '${GATEWAY_PORT}:${GATEWAY_PORT}'
+    restart: on-failure
