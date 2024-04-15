@@ -7,18 +7,34 @@ edition = "2021"
 name = "authentication"
 path = "src/main.rs"
 
+#[dependencies]
+#configuration = { path = "../../library/configuration" }
+#error = { path = "../../library/error" }
+#status = { path = "../../library/status" }
+#async-trait = { file = "../../dependencies.toml" }
+#futures = { file = "../../dependencies.toml" }
+#tonic = { file = "../../dependencies.toml" }
+#prost = { file = "../../dependencies.toml" }
+#tokio = { file = "../../dependencies.toml", features = ["macros", "rt-multi-thread"] }
+#serde = { file = "../../dependencies.toml", features = ["derive"] }
+#serde_json = { file = "../../dependencies.toml" }
+#
+#[build-dependencies]
+#protoc-bin-vendored = { file = "../../dependencies.toml" }
+#tonic-build = { file = "../../dependencies.toml" }
+
 [dependencies]
 configuration = { path = "../../library/configuration" }
 error = { path = "../../library/error" }
 status = { path = "../../library/status" }
-async-trait = "0.1.68"
-futures = "0.3.28"
-tonic = "0.9.2"
-prost = "0.11.6"
-tokio = { version = "1.24.2", features = ["rt-multi-thread"] }
-serde = { version = "1.0.160", features = ["derive"] }
-serde_json = "1.0.96"
+async-trait = { version = "0.1.80" }
+futures = { version = "0.3.30" }
+tonic = { version = "0.11.0" }
+prost = { version = "0.12.4" }
+tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = { version = "1.0.115" }
 
 [build-dependencies]
-protoc-bin-vendored = "3.0.0"
-tonic-build = "0.9.1"
+protoc-bin-vendored = { version = "3.0.0" }
+tonic-build = { version = "0.11.0" }

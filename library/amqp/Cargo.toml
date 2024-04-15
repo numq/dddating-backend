@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-futures-lite = "1.13.0"
-lapin = "2.2.1"
-tokio = { version = "1.28.2", features = ["full"] }
-tokio-test = "0.4.2"
+futures-lite = { version = "2.3.0" }
+lapin = { version = "2.3.1" }
+tokio = { version = "1.37.0" }
+tokio-test = { version = "0.4.4" }
