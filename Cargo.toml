@@ -18,3 +18,5 @@ members = [
     "service/support",
     "service/token"
 ]
+
+resolver = "2"
