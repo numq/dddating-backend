@@ -85,7 +85,7 @@ impl TokenRepository for TokenRepositoryImpl {
         if let Ok(claims) = self.verify_token(token) {
             if let Some(exp) = claims.get("exp") {
                 if let Ok(exp) = exp.parse::<u64>() {
-                    let _ = redis.set_ex::<&str, &str, usize>(token, "", exp as usize);
+                    let _ = redis.set_ex::<&str, &str, u64>(token, "", exp);
                 }
             }
         }

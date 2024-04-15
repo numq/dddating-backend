@@ -1,5 +1,3 @@
-use std::time::Duration;
-
 use redis::{Client as RedisClient, Commands, transaction};
 
 use crate::matchmaking::api::MatchmakingApi;
@@ -58,7 +56,7 @@ impl RecommendationRepository for RecommendationRepositoryImpl {
             if let Ok(_) = transaction(&mut redis, &[excepted_id], |con, pipe| {
                 pipe
                     .hset::<&str, &str, bool>(excepted_id, &id, liked_or_disliked)
-                    .expire(excepted_id, Duration::from_secs(60 * 60 * 12).as_secs() as usize)
+                    .expire(excepted_id, 60 * 60 * 12)
                     .query::<Option<()>>(con)
             }) {
                 if !liked_or_disliked {

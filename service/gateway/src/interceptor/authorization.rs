@@ -2,10 +2,9 @@ use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
 
-use tonic::{Request, Response, Status};
-use tower::{Service, ServiceBuilder};
-
-use interceptor::{async_interceptor, AsyncInterceptedService, AsyncInterceptor};
+use tonic::{Request, Status};
+use tonic_async_interceptor::{async_interceptor, AsyncInterceptedService, AsyncInterceptor};
+use tower::{ServiceBuilder};
 
 use crate::authentication::interactor::AuthenticationInteractor;
 

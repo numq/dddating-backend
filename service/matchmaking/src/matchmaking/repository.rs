@@ -1,3 +1,4 @@
+use std::i64;
 use std::time::Duration;
 
 use futures::TryStreamExt;
@@ -83,7 +84,7 @@ impl MatchmakingRepository for MatchmakingRepositoryImpl {
         transaction(&mut redis, &[from_id], |con, pipe| {
             pipe
                 .sadd(from_id, to_id)
-                .expire(from_id, Duration::from_secs(60 * 60 * 12 * 30).as_secs() as usize)
+                .expire(from_id, 60 * 60 * 12 * 30)
                 .query(con)
         })?;
 
