@@ -4,23 +4,16 @@ use std::sync::Arc;
 
 use tonic::{Request, Status};
 use tonic_async_interceptor::{async_interceptor, AsyncInterceptedService, AsyncInterceptor};
-use tower::{ServiceBuilder};
+use tower::ServiceBuilder;
 
 use crate::authentication::interactor::AuthenticationInteractor;
 
 #[derive(Clone)]
-pub struct AuthInterceptor<S> {
-    service: S,
+pub struct AuthInterceptor {
     interactor: Arc<Box<dyn AuthenticationInteractor + Send + Sync>>,
 }
 
-impl<S> AuthInterceptor<S> {
-    pub fn new(service: S, interactor: Arc<Box<dyn AuthenticationInteractor + Send + Sync>>) -> Self {
-        AuthInterceptor { service, interactor }
-    }
-}
-
-impl<S> AsyncInterceptor for AuthInterceptor<S> {
+impl AsyncInterceptor for AuthInterceptor {
     type Future = Pin<Box<dyn Future<Output=Result<Request<()>, Status>> + Send + 'static>>;
 
     fn call(&mut self, request: Request<()>) -> Self::Future {
@@ -47,12 +40,12 @@ impl<S> AsyncInterceptor for AuthInterceptor<S> {
 pub fn with_auth_interceptor<S>(
     service: S,
     interactor: Arc<Box<dyn AuthenticationInteractor + Send + Sync>>,
-) -> AsyncInterceptedService<S, AuthInterceptor<S>>
+) -> AsyncInterceptedService<S, AuthInterceptor>
     where
         S: Clone,
-        AuthInterceptor<S>: AsyncInterceptor
+        AuthInterceptor: AsyncInterceptor
 {
     ServiceBuilder::new()
-        .layer(async_interceptor(AuthInterceptor { service: service.clone(), interactor }))
+        .layer(async_interceptor(AuthInterceptor { interactor }))
         .service(service)
 }
