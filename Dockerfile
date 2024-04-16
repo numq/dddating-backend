@@ -6,7 +6,6 @@ WORKDIR /build
 COPY library library/
 COPY proto proto/
 COPY .env .
-COPY dependencies.toml .
 WORKDIR /build/service/$SERVICE_NAME
 COPY service/$SERVICE_NAME/src src/
 COPY service/$SERVICE_NAME/build.rs .

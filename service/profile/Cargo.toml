@@ -7,24 +7,6 @@ edition = "2021"
 name = "profile"
 path = "src/main.rs"
 
-#[dependencies]
-#configuration = { path = "../../library/configuration" }
-#error = { path = "../../library/error" }
-#status = { path = "../../library/status" }
-#async-trait = { file = "../../dependencies.toml" }
-#futures = { file = "../../dependencies.toml" }
-#amiquip = { file = "../../dependencies.toml" }
-#mongodb = { file = "../../dependencies.toml" }
-#serde = { file = "../../dependencies.toml" }
-#redis = { file = "../../dependencies.toml" }
-#tonic = { file = "../../dependencies.toml" }
-#prost = { file = "../../dependencies.toml" }
-#tokio = { file = "../../dependencies.toml" }
-#
-#[build-dependencies]
-#protoc-bin-vendored = { file = "../../dependencies.toml" }
-#tonic-build = { file = "../../dependencies.toml" }
-
 [dependencies]
 configuration = { path = "../../library/configuration" }
 error = { path = "../../library/error" }
