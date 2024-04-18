@@ -2,7 +2,7 @@ services:
   amqp:
     image: rabbitmq:latest
     env_file:
-      - .env
+      - .env.production
     volumes:
       - ./:/data
     ports:
@@ -12,7 +12,7 @@ services:
   redis:
     image: redis:latest
     env_file:
-      - .env
+      - .env.production
     volumes:
       - ./:/data
     ports:
@@ -22,7 +22,7 @@ services:
   mongo:
     image: mongo:latest
     env_file:
-      - .env
+      - .env.production
     volumes:
       - ./:/data
     ports:
@@ -34,8 +34,10 @@ services:
       args:
         SERVICE_NAME: account
     env_file:
-      - .env
-    depends_on:
+      - .env.production
+    environment:
+      MONGO_HOSTNAME: mongo
+    links:
       - mongo
     volumes:
       - ./:/data
@@ -48,8 +50,10 @@ services:
       args:
         SERVICE_NAME: token
     env_file:
-      - .env
-    depends_on:
+      - .env.production
+    environment:
+      REDIS_HOSTNAME: redis
+    links:
       - redis
     volumes:
       - ./:/data
@@ -62,8 +66,11 @@ services:
       args:
         SERVICE_NAME: authentication
     env_file:
-      - .env
-    depends_on:
+      - .env.production
+    environment:
+      ACCOUNT_HOSTNAME: account
+      TOKEN_HOSTNAME: token
+    links:
       - account
       - token
     volumes:
@@ -77,12 +84,13 @@ services:
       args:
         SERVICE_NAME: conversation
     env_file:
-      - .env
+      - .env.production
     environment:
-      AMQP_HOSTNAME: host.docker.internal
-    depends_on:
-      - mongo
+      AMQP_HOSTNAME: amqp
+      MONGO_HOSTNAME: mongo
+    links:
       - amqp
+      - mongo
     volumes:
       - ./:/data
     ports:
@@ -94,13 +102,15 @@ services:
       args:
         SERVICE_NAME: matchmaking
     env_file:
-      - .env
+      - .env.production
     environment:
-      AMQP_HOSTNAME: host.docker.internal
-    depends_on:
+      AMQP_HOSTNAME: amqp
+      MONGO_HOSTNAME: mongo
+      REDIS_HOSTNAME: redis
+    links:
+      - amqp
       - mongo
       - redis
-      - amqp
     volumes:
       - ./:/data
     ports:
@@ -112,8 +122,10 @@ services:
       args:
         SERVICE_NAME: profile
     env_file:
-      - .env
-    depends_on:
+      - .env.production
+    environment:
+      MONGO_HOSTNAME: mongo
+    links:
       - mongo
     volumes:
       - ./:/data
@@ -126,14 +138,16 @@ services:
       args:
         SERVICE_NAME: recommendation
     env_file:
-      - .env
+      - .env.production
     environment:
-      AMQP_HOSTNAME: host.docker.internal
-      MATCHMAKING_HOSTNAME: host.docker.internal
-      PROFILE_HOSTNAME: host.docker.internal
-    depends_on:
-      - redis
+      AMQP_HOSTNAME: amqp
+      MATCHMAKING_HOSTNAME: matchmaking
+      REDIS_HOSTNAME: redis
+      PROFILE_HOSTNAME: profile
+    links:
+      - amqp
       - matchmaking
+      - redis
       - profile
     volumes:
       - ./:/data
@@ -146,8 +160,10 @@ services:
       args:
         SERVICE_NAME: safety
     env_file:
-      - .env
-    depends_on:
+      - .env.production
+    environment:
+      MONGO_HOSTNAME: mongo
+    links:
       - mongo
     volumes:
       - ./:/data
@@ -160,8 +176,10 @@ services:
       args:
         SERVICE_NAME: support
     env_file:
-      - .env
-    depends_on:
+      - .env.production
+    environment:
+      MONGO_HOSTNAME: mongo
+    links:
       - mongo
     volumes:
       - ./:/data
@@ -174,8 +192,16 @@ services:
       args:
         SERVICE_NAME: gateway
     env_file:
-      - .env
-    depends_on:
+      - .env.production
+    environment:
+      AUTHENTICATION_HOSTNAME: authentication
+      CONVERSATION_HOSTNAME: conversation
+      MATCHMAKING_HOSTNAME: matchmaking
+      PROFILE_HOSTNAME: profile
+      RECOMMENDATION_HOSTNAME: recommendation
+      SAFETY_HOSTNAME: safety
+      SUPPORT_HOSTNAME: support
+    links:
       - authentication
       - conversation
       - matchmaking
