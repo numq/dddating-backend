@@ -20,7 +20,7 @@ ____
 
 ## Services:
 
-> Details about API methods are available in each service README
+> Details about the API methods are available in the README of each service
 
 - [Gateway](./service/gateway) - Entrypoint via microservices aggregation
 - [Authentication](./service/authentication) - Password based authentication functionality
