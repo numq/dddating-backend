@@ -14,43 +14,41 @@ ____
 
 ![Overview](./media/dddating-backend-overview.png)
 
-### Features:
+## Installation
 
-- *JWT* based authentication
-- Secure account and public profile
-- Filter based recommendations
-- Like/dislike/backtrack with expiration
-- Reactive conversation creation functionality for matches
-- Profile report system
-- Tickets based support functionality
+> docker-compose up -d
 
-### Architectural design:
+## Services:
+
+> Details about API methods are available in each service README
+
+- [Gateway](./service/gateway) - Entrypoint via microservices aggregation
+- [Authentication](./service/authentication) - Password based authentication functionality
+    - [Account](./service/account) - User account management
+    - [Token](./service/token) - User authentication session handling
+- [Conversation](./service/conversation) - Chat between matches
+- [Matchmaking](./service/matchmaking) - Likes, dislikes with expiration and backtrack
+- [Profile](./service/profile) - User profile management
+- [Recommendation](./service/recommendation) - Match candidates by filters
+- [Safety](./service/safety) - Profile report system
+- [Support](./service/support) - Ticket based report functionality
+
+## Architecture:
 
 - *Clean Architecture*
 - *Domain-driven design (DDD)*
+- *Reactive programming*
 - *Rust* workspace
 - *gRPC* based microservices
 - *gRPC* based gateway
 
-### Technologies:
+## Technologies:
 
-- *Rust* language
-- *tokio* async runtime
-- *tonic* gRPC implementation
-- *prost* Protocol Buffers implementation
-- *RabbitMQ (lapin)* message brocker
-- *MongoDB* NoSQL database
-- *Redis* in-memory cache
-
-### Microservices:
-
-- [Gateway](./service/gateway)
-- [Authentication](./service/authentication)
-    - [Account](./service/account)
-    - [Token](./service/token)
-- [Conversation](./service/conversation)
-- [Matchmaking](./service/matchmaking)
-- [Profile](./service/profile)
-- [Recommendation](./service/recommendation)
-- [Safety](./service/safety)
-- [Support](./service/support)
+- **Rust** language
+- **tokio** async runtime
+- **tonic** gRPC implementation
+- **prost** Protocol Buffers implementation
+- **RabbitMQ (lapin)** message brocker
+- **MongoDB** NoSQL database
+- **Redis** in-memory cache
+- **JWT** based authentication
